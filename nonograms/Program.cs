@@ -16,7 +16,30 @@ namespace nonograms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainWindow());
         }
+    }
+
+    internal class Level
+    {
+        int[,] testSample = {
+            {1,1,1,1,1,1,1,1,1,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {0,1,1,1,0,0,1,1,1,0},
+            {0,0,0,1,1,1,1,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0},
+            {0,0,0,1,1,1,1,0,0,0},
+            {0,0,1,1,1,1,1,1,0,0},
+        };
+        public Level()
+        {
+            int[] upNumberColumn;
+            int[] leftNumberRow;
+        }
+        ~Level() { }
+
     }
 }
