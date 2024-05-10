@@ -10,6 +10,21 @@ using System.Windows.Forms;
 
 namespace nonograms {
     public partial class Playground : Form {
+        int GridHeight = 10;
+        int GridWidth = 10;
+        int[,] GridGame = {
+            {1,1,1,1,1,1,1,1,1,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {1,0,1,1,0,0,1,1,0,1},
+            {0,1,1,1,0,0,1,1,1,0},
+            {0,0,0,1,1,1,1,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0},
+            {0,0,0,1,1,1,1,0,0,0},
+            {0,0,1,1,1,1,1,1,0,0},
+        };
+
         public Playground() {
             InitializeComponent();
             Text = "Cup";
@@ -17,7 +32,12 @@ namespace nonograms {
         }
 
         public Playground(int[,] arr, int h, int w) {
-            
+            InitializeComponent();
+            Text = "Cup";
+            this.Size = new System.Drawing.Size(300, 300);
+            this.GridHeight = h;
+            this.GridWidth = w;
+            this.GridGame = arr;
         }
 
         private void Playground_Load(object sender, EventArgs e) {
@@ -29,13 +49,15 @@ namespace nonograms {
         private void gameGrid_Paint(object sender, PaintEventArgs e) {
             g = CreateGraphics();
             g.Clear(Color.White);
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < GridHeight + 1; i++)
                 g.DrawLine(Pens.Black, i * 20, 0, i * 20, 200);
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < GridWidth + 1; i++)
                 g.DrawLine(Pens.Black, 0, i*20, 200, i*20);
-            SolidBrush blueBrush = new SolidBrush(Color.Blue);
-            for (int i = 0; i < 10; i++)
-                g.FillRectangle(blueBrush, 1 + i * 20, 1 + i * 20, 19, 19);
+            SolidBrush blackBrush = new SolidBrush(Color.Black);
+            for (int i = 0; i < GridHeight; i++)
+                for (int j = 0; j < GridWidth; j++)
+                    if (GridGame[i,j] == 1)
+                        g.FillRectangle(blackBrush, 2 + j * 20, 2 + i * 20, 17, 17);
         }
     }
 }

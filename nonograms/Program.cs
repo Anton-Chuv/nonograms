@@ -4,25 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace nonograms
-{
-    internal static class Program
-    {
-        /// <summary>
-        /// Главная точка входа для приложения.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainWindow());
-            Application.Run(new Playground());
-        }
-    }
-
-    internal class Level
-    {
+namespace nonograms {
+    internal class Level {
         int[,] testSample = {
             {1,1,1,1,1,1,1,1,1,1},
             {1,0,1,1,0,0,1,1,0,1},
@@ -35,12 +18,26 @@ namespace nonograms
             {0,0,0,1,1,1,1,0,0,0},
             {0,0,1,1,1,1,1,1,0,0},
         };
+        public int[,] getLevelGrid() {
+            return testSample;
+        }
         public Level()
         {
             int[] upNumberColumn;
             int[] leftNumberRow;
         }
-        ~Level() { }
+    }
 
+    internal static class Program {
+        /// <summary>
+        /// Главная точка входа для приложения.
+        /// </summary>
+        [STAThread]
+        static void Main() {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MainWindow());
+            Application.Run(new Playground());
+        }
     }
 }
