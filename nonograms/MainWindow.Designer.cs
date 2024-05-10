@@ -47,9 +47,6 @@
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(482, 485);
             this.topPanel.TabIndex = 0;
-            this.topPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.topPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.topPanel_MouseDown);
-            this.topPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.topPanel_MouseMove);
             // 
             // button1
             // 
@@ -62,7 +59,6 @@
             this.button1.TabIndex = 2;
             this.button1.Text = "1";
             this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // mainPanel
             // 
@@ -98,7 +94,6 @@
             this.mainLabel.TabIndex = 0;
             this.mainLabel.Text = "Главное меню";
             this.mainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.mainLabel.Click += new System.EventHandler(this.label1_Click);
             this.mainLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mainLabel_MouseDown);
             this.mainLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mainLabel_MouseMove);
             // 
