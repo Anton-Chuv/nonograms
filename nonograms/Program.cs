@@ -16,7 +16,7 @@ namespace nonograms {
             {0,0,0,0,1,1,0,0,0,0},
             {0,0,0,0,1,1,0,0,0,0},
             {0,0,0,1,1,1,1,0,0,0},
-            {0,0,1,1,1,1,1,1,0,0},
+            {0,0,1,1,1,1,1,1,1,0},
         };
         public int[,] getLevelGrid() {
             return testSample;
@@ -37,7 +37,8 @@ namespace nonograms {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MainWindow());
-            Application.Run(new Playground());
+            var currentLevel = new Level();
+            Application.Run(new Playground(currentLevel.getLevelGrid(), 10, 10));
         }
     }
 }

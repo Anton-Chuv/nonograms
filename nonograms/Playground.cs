@@ -34,13 +34,17 @@ namespace nonograms {
         public Playground(int[,] arr, int h, int w) {
             InitializeComponent();
             Text = "Cup";
-            this.Size = new System.Drawing.Size(300, 300);
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Size = new System.Drawing.Size(h*20+1, w*20+1);
             this.GridHeight = h;
             this.GridWidth = w;
             this.GridGame = arr;
         }
 
         private void Playground_Load(object sender, EventArgs e) {
+            Panel TopPanel = new Panel();
+            TopPanel.Dock = DockStyle.Top;
+            TopPanel.BackColor = Color.Blue;
 
         }
 
@@ -48,7 +52,7 @@ namespace nonograms {
         Graphics g;
         private void gameGrid_Paint(object sender, PaintEventArgs e) {
             g = CreateGraphics();
-            g.Clear(Color.White);
+            g.Clear(Color.WhiteSmoke);
             for (int i = 0; i < GridHeight + 1; i++)
                 g.DrawLine(Pens.Black, i * 20, 0, i * 20, 200);
             for (int i = 0; i < GridWidth + 1; i++)
