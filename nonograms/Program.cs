@@ -16,13 +16,12 @@ namespace nonograms {
             {0,0,0,0,1,1,0,0,0,0},
             {0,0,0,0,1,1,0,0,0,0},
             {0,0,0,1,1,1,1,0,0,0},
-            {0,0,1,1,1,1,1,1,1,0},
+            {0,0,1,1,1,1,1,1,0,0},
         };
         public int[,] getLevelGrid() {
             return testSample;
         }
-        public Level()
-        {
+        public Level() {
             int[] upNumberColumn;
             int[] leftNumberRow;
         }

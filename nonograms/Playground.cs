@@ -10,20 +10,9 @@ using System.Windows.Forms;
 
 namespace nonograms {
     public partial class Playground : Form {
-        int GridHeight = 10;
-        int GridWidth = 10;
-        int[,] GridGame = {
-            {1,1,1,1,1,1,1,1,1,1},
-            {1,0,1,1,0,0,1,1,0,1},
-            {1,0,1,1,0,0,1,1,0,1},
-            {1,0,1,1,0,0,1,1,0,1},
-            {0,1,1,1,0,0,1,1,1,0},
-            {0,0,0,1,1,1,1,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0},
-            {0,0,0,1,1,1,1,0,0,0},
-            {0,0,1,1,1,1,1,1,0,0},
-        };
+        int GridHeight;
+        int GridWidth;
+        int[,] GridGame;
 
         public Playground() {
             InitializeComponent();
@@ -48,7 +37,6 @@ namespace nonograms {
 
         }
 
-
         Graphics g;
         private void gameGrid_Paint(object sender, PaintEventArgs e) {
             g = CreateGraphics();
@@ -62,6 +50,7 @@ namespace nonograms {
                 for (int j = 0; j < GridWidth; j++)
                     if (GridGame[i,j] == 1)
                         g.FillRectangle(blackBrush, 2 + j * 20, 2 + i * 20, 17, 17);
+
         }
     }
 }
