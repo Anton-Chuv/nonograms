@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace nonograms {
-    internal class Level {
+    public class Level {
         int[,] testSample = {
             {1,1,1,1,1,1,1,1,1,1},
             {1,0,1,1,0,0,1,1,0,1},
@@ -17,13 +17,15 @@ namespace nonograms {
             {0,0,0,0,1,1,0,0,0,0},
             {0,0,0,1,1,1,1,0,0,0},
             {0,0,1,1,1,1,1,1,0,0},
+            {0,1,1,1,1,1,1,1,1,0},
         };
+        int[] upNumberColumn;
+        int[] leftNumberRow;
         public int[,] getLevelGrid() {
             return testSample;
         }
         public Level() {
-            int[] upNumberColumn;
-            int[] leftNumberRow;
+
         }
     }
 
@@ -37,7 +39,8 @@ namespace nonograms {
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MainWindow());
             var currentLevel = new Level();
-            Application.Run(new Playground(currentLevel.getLevelGrid(), 10, 10));
+            Application.Run(new Playground(currentLevel));
+
         }
     }
 }

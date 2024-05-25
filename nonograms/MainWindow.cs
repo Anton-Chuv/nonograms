@@ -29,5 +29,9 @@ namespace nonograms {
         private void mainLabel_MouseDown(object sender, MouseEventArgs e) {
             LastPoint = new Point(e.X, e.Y);
         }
+
+        private void mainLabel_Click(object sender, EventArgs e) {
+
+        }
     }
 }

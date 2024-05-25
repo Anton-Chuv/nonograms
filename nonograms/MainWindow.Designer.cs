@@ -94,6 +94,7 @@
             this.mainLabel.TabIndex = 0;
             this.mainLabel.Text = "Главное меню";
             this.mainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.mainLabel.Click += new System.EventHandler(this.mainLabel_Click);
             this.mainLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mainLabel_MouseDown);
             this.mainLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mainLabel_MouseMove);
             // 
