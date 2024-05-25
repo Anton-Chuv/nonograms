@@ -123,14 +123,15 @@ namespace nonograms {
         }
 
         private void TopPanel_Paint(object sender, PaintEventArgs e) {
-            for (int i = 0; i < GridWidth + 1; i++) {
+            for (int i = 0; i < GridWidth; i++) {
                 e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, TopPanel.Height * CellSize);
                 // заполнить столбцы
             }
+            e.Graphics.DrawLine(Pens.LightGray, GridWidth * CellSize, 0, GridWidth * CellSize, TopPanel.Height * CellSize);
         }
 
         private void LeftPanel_Paint(object sender, PaintEventArgs e) {
-            for (int i = 0; i < GridWidth + 1; i++) {
+            for (int i = 0; i < GridHeight; i++) {
                 e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, LeftPanel.Width * CellSize, i * CellSize);
                 for (int j = 0; j < leftNumRows[i].Count; j++) {
                     Point p = new Point((j + (maxLeftRowLen - leftNumRows[i].Count) ) * CellSize, i * CellSize);
@@ -138,6 +139,7 @@ namespace nonograms {
                 }
                 // заполнить строки
             }
+            e.Graphics.DrawLine(Pens.LightGray, 0, GridHeight * CellSize, LeftPanel.Width * CellSize, GridHeight * CellSize);
         }
     }
 }
