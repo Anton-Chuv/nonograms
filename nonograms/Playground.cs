@@ -15,7 +15,9 @@ namespace nonograms {
         int GridHeight;
         int GridWidth;
         int[,] GridGame;
+        List<int>[] leftNumRows;
         int CellSize = 20;
+        int maxLeftRowLen = 0;
 
         public Playground() {
             InitializeComponent();
@@ -25,11 +27,19 @@ namespace nonograms {
 
         public Playground(Level level) {
             InitializeComponent();
-            Text = "Cup";
+            Text = level.getName();
             this.FormBorderStyle = FormBorderStyle.None;
             this.GridGame = level.getLevelGrid();
             this.GridHeight = level.getLevelGrid().GetLength(0);
             this.GridWidth = level.getLevelGrid().GetLength(1);
+            this.leftNumRows = level.getLeftNumRows();
+            this.maxLeftRowLen = 0;
+            for (int i = 0; i < leftNumRows.Length; i++)
+                if (leftNumRows[i].Count > maxLeftRowLen)
+                    maxLeftRowLen = leftNumRows[i].Count;
+
+            this.TopPanel.Height = 5; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
+            this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
             // this.Size = new System.Drawing.Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
             
         }
@@ -37,10 +47,17 @@ namespace nonograms {
         private void Playground_Load(object sender, EventArgs e) {
             //this.Controls.Add( TopPanel );
             //this.Controls.Add( GridPanel );
-            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
-            this.GridPanel.Location = new Point(this.Width - this.GridWidth * CellSize - 1, 
-                                                this.Height - this.GridHeight * CellSize - 1);
+            this.TopPanel.Size = new Size(this.GridWidth * CellSize + 1, this.TopPanel.Height * CellSize + 1);
+            this.LeftPanel.Size = new Size(this.LeftPanel.Width * CellSize + 1, this.GridHeight * CellSize + 1);
+            
+            this.LeftPanel.Location = new Point(0, TopPanel.Height);
+            this.TopPanel.Location = new Point(LeftPanel.Width, 0);
 
+
+            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
+            this.GridPanel.Location = new Point(LeftPanel.Width, TopPanel.Height);
+
+            this.Size = new Size(LeftPanel.Width + GridPanel.Width, TopPanel.Height + GridPanel.Height);
         }
 
 
@@ -63,14 +80,15 @@ namespace nonograms {
         }
         private void GridPanel_Paint(object sender, PaintEventArgs e) {
             for (int i = 0; i < GridWidth + 1; i++)
-                e.Graphics.DrawLine(Pens.Black, i * CellSize, 0, i * CellSize, GridHeight * CellSize);
+                e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, GridHeight * CellSize);
             for (int i = 0; i < GridHeight + 1; i++)
-                e.Graphics.DrawLine(Pens.Black, 0, i * CellSize, GridWidth * CellSize, i * CellSize);
+                e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, GridWidth * CellSize, i * CellSize);
+
             SolidBrush blackBrush = new SolidBrush(Color.Black);
             for (int i = 0; i < GridHeight; i++)
                 for (int j = 0; j < GridWidth; j++)
                     if (GridGame[i, j] == 1)
-                        e.Graphics.FillRectangle(blackBrush, 2 + j * CellSize, 2 + i * CellSize, CellSize - 3, CellSize - 3);
+                        e.Graphics.FillRectangle(blackBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
         }
         Point click;
 
@@ -84,9 +102,9 @@ namespace nonograms {
                 case 1:
                     GridGame[click.Y / 20, click.X / 20] = 0;
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
-                        SolidBrush whiteBrush = new SolidBrush(Color.WhiteSmoke);
+                        SolidBrush whiteBrush = new SolidBrush(Color.White);
 
-                        g.FillRectangle(whiteBrush, 2 + click.X - (click.X % CellSize), 2 + click.Y - (click.Y % CellSize), CellSize - 3, CellSize - 3);
+                        g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
                         whiteBrush.Dispose();
                     }
                     break;
@@ -95,12 +113,30 @@ namespace nonograms {
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
                         SolidBrush blackBrush = new SolidBrush(Color.Black);
 
-                        g.FillRectangle(blackBrush, 2 + click.X - (click.X % CellSize), 2 + click.Y - (click.Y % CellSize), CellSize - 3, CellSize - 3);
+                        g.FillRectangle(blackBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
                         blackBrush.Dispose();
                     }
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void TopPanel_Paint(object sender, PaintEventArgs e) {
+            for (int i = 0; i < GridWidth + 1; i++) {
+                e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, TopPanel.Height * CellSize);
+                // заполнить столбцы
+            }
+        }
+
+        private void LeftPanel_Paint(object sender, PaintEventArgs e) {
+            for (int i = 0; i < GridWidth + 1; i++) {
+                e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, LeftPanel.Width * CellSize, i * CellSize);
+                for (int j = 0; j < leftNumRows[i].Count; j++) {
+                    Point p = new Point((j + (maxLeftRowLen - leftNumRows[i].Count) ) * CellSize, i * CellSize);
+                    e.Graphics.DrawString(leftNumRows[i][j].ToString(), Font, new SolidBrush(Color.Black), p);
+                }
+                // заполнить строки
             }
         }
     }
