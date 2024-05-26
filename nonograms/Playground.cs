@@ -16,8 +16,10 @@ namespace nonograms {
         int GridWidth;
         int[,] GridGame;
         List<int>[] leftNumRows;
+        List<int>[] topNumCols;
         int CellSize = 20;
         int maxLeftRowLen = 0;
+        int maxTopColLen = 0;
 
         public Playground() {
             InitializeComponent();
@@ -37,16 +39,21 @@ namespace nonograms {
             for (int i = 0; i < leftNumRows.Length; i++)
                 if (leftNumRows[i].Count > maxLeftRowLen)
                     maxLeftRowLen = leftNumRows[i].Count;
-
-            this.TopPanel.Height = 5; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
             this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
+
+            this.topNumCols = level.getTopNumCols();
+            this.maxTopColLen = 0;
+            for (int i = 0; i < topNumCols.Length; i++)
+                if (topNumCols[i].Count > maxTopColLen)
+                    maxTopColLen = topNumCols[i].Count;
+            this.TopPanel.Height = maxTopColLen; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
+
             // this.Size = new System.Drawing.Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
-            
+
         }
 
         private void Playground_Load(object sender, EventArgs e) {
-            //this.Controls.Add( TopPanel );
-            //this.Controls.Add( GridPanel );
+
             this.TopPanel.Size = new Size(this.GridWidth * CellSize + 1, this.TopPanel.Height * CellSize + 1);
             this.LeftPanel.Size = new Size(this.LeftPanel.Width * CellSize + 1, this.GridHeight * CellSize + 1);
             
@@ -125,7 +132,14 @@ namespace nonograms {
         private void TopPanel_Paint(object sender, PaintEventArgs e) {
             for (int i = 0; i < GridWidth; i++) {
                 e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, TopPanel.Height * CellSize);
-                // заполнить столбцы
+                for (int j = 0; j < topNumCols[i].Count; j++) {
+                    Point p = new Point(i * CellSize + CellSize / 2,(j + (maxTopColLen - topNumCols[i].Count)) * CellSize + CellSize / 2);
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Center;
+
+                    e.Graphics.DrawString(topNumCols[i][j].ToString(), Font, new SolidBrush(Color.Black), p, sf);
+                }
             }
             e.Graphics.DrawLine(Pens.LightGray, GridWidth * CellSize, 0, GridWidth * CellSize, TopPanel.Height * CellSize);
         }
@@ -134,10 +148,13 @@ namespace nonograms {
             for (int i = 0; i < GridHeight; i++) {
                 e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, LeftPanel.Width * CellSize, i * CellSize);
                 for (int j = 0; j < leftNumRows[i].Count; j++) {
-                    Point p = new Point((j + (maxLeftRowLen - leftNumRows[i].Count) ) * CellSize, i * CellSize);
-                    e.Graphics.DrawString(leftNumRows[i][j].ToString(), Font, new SolidBrush(Color.Black), p);
+                    Point p = new Point((j + (maxLeftRowLen - leftNumRows[i].Count) ) * CellSize + CellSize / 2, i * CellSize + CellSize/2);
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Center;
+
+                    e.Graphics.DrawString(leftNumRows[i][j].ToString(), Font, new SolidBrush(Color.Black), p, sf);
                 }
-                // заполнить строки
             }
             e.Graphics.DrawLine(Pens.LightGray, 0, GridHeight * CellSize, LeftPanel.Width * CellSize, GridHeight * CellSize);
         }

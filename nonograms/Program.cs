@@ -9,11 +9,12 @@ namespace nonograms {
         string Name;
         int[,] levelGrid;
         int[,] answerGrid;
-        List<int>[] upNumberColumns;
+        List<int>[] topNumberColumns;
         List<int>[] leftNumberRows;
         public int[,] getLevelGrid() { return answerGrid; } // TODO change to levelGrid
         public string getName() { return Name; }
         public List<int>[] getLeftNumRows() { return leftNumberRows; }
+        public List<int>[] getTopNumCols() { return topNumberColumns; }
         public Level() {
             // тестовый уровень
             Name = "Cup";
@@ -25,7 +26,7 @@ namespace nonograms {
                 {0,1,1,1,0,0,1,1,1,0},
                 {0,0,0,1,1,1,1,0,0,0},
                 {0,0,0,0,1,1,0,0,0,0},
-                {0,0,0,0,1,1,0,0,0,0},
+                {0,1,0,0,1,1,0,0,0,0},
                 {0,0,0,1,1,1,1,0,0,0},
                 {0,0,1,1,1,1,1,1,0,0},
                 {0,1,1,1,1,1,1,1,1,0},
@@ -36,6 +37,7 @@ namespace nonograms {
                 for (int j = 0; j < levelGrid.GetLength(1); j++)
                     levelGrid[i, j] = 0;
             fillLeftNumberRows(answerGrid);
+            fillTopNumberColumns(answerGrid);
         }
         void fillLeftNumberRows(int[,] levelGrid) {
             leftNumberRows = new List<int>[levelGrid.GetLength(0)];
@@ -49,6 +51,22 @@ namespace nonograms {
                     }
                     if (lenFilledCell > 0)
                         leftNumberRows[i].Add(lenFilledCell);
+                }
+            }
+        }
+
+        void fillTopNumberColumns(int[,] levelGrid) {
+            topNumberColumns = new List<int>[levelGrid.GetLength(1)];
+            for (int i = 0; i < levelGrid.GetLength(1); i++) {
+                topNumberColumns[i] = new List<int>();
+                for (int j = 0; j < levelGrid.GetLength(0); j++) {
+                    int lenFilledCell = 0;
+                    while (j < levelGrid.GetLength(0) && answerGrid[j, i] == 1) {
+                        lenFilledCell++;
+                        j++;
+                    }
+                    if (lenFilledCell > 0)
+                        topNumberColumns[i].Add(lenFilledCell);
                 }
             }
         }
