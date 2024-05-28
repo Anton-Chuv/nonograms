@@ -6,11 +6,11 @@ using System.Windows.Forms;
 
 namespace nonograms {
     public class Level {
-        string Name;
-        int[,] levelGrid;
-        int[,] answerGrid;
-        List<int>[] topNumberColumns;
-        List<int>[] leftNumberRows;
+        public string Name;
+        public int[,] levelGrid;
+        public int[,] answerGrid;
+        public List<int>[] topNumberColumns;
+        public List<int>[] leftNumberRows;
         public int[,] getLevelGrid() { return answerGrid; } // TODO change to levelGrid
         public string getName() { return Name; }
         public List<int>[] getLeftNumRows() { return leftNumberRows; }
@@ -26,11 +26,10 @@ namespace nonograms {
                 {0,1,1,1,0,0,1,1,1,0},
                 {0,0,0,1,1,1,1,0,0,0},
                 {0,0,0,0,1,1,0,0,0,0},
-                {0,1,0,0,1,1,0,0,0,0},
+                {0,0,0,0,1,1,0,0,0,0},
                 {0,0,0,1,1,1,1,0,0,0},
-                {0,0,1,1,1,1,1,1,0,0},
                 {0,1,1,1,1,1,1,1,1,0},
-                {0,1,0,1,0,1,0,1,0,1}
+                {1,0,1,0,1,1,0,1,0,1}
             };
             levelGrid = new int[answerGrid.GetLength(0), answerGrid.GetLength(1)];
             for (int i = 0; i < levelGrid.GetLength(0); i++)
@@ -80,10 +79,9 @@ namespace nonograms {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MainWindow());
             var currentLevel = new Level();
-            Application.Run(new Playground(currentLevel));
-
+            //Application.Run(new Playground(currentLevel));
+            Application.Run(new MainWindow());
         }
     }
 }

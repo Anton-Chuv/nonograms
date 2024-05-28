@@ -29,19 +29,18 @@ namespace nonograms {
 
         public Playground(Level level) {
             InitializeComponent();
-            Text = level.getName();
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.GridGame = level.getLevelGrid();
-            this.GridHeight = level.getLevelGrid().GetLength(0);
-            this.GridWidth = level.getLevelGrid().GetLength(1);
-            this.leftNumRows = level.getLeftNumRows();
+            Text = level.Name;
+            this.GridGame = level.levelGrid;
+            this.GridHeight = level.levelGrid.GetLength(0);
+            this.GridWidth = level.levelGrid.GetLength(1);
+            this.leftNumRows = level.leftNumberRows;
             this.maxLeftRowLen = 0;
             for (int i = 0; i < leftNumRows.Length; i++)
                 if (leftNumRows[i].Count > maxLeftRowLen)
                     maxLeftRowLen = leftNumRows[i].Count;
             this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
 
-            this.topNumCols = level.getTopNumCols();
+            this.topNumCols = level.topNumberColumns;
             this.maxTopColLen = 0;
             for (int i = 0; i < topNumCols.Length; i++)
                 if (topNumCols[i].Count > maxTopColLen)
@@ -157,6 +156,10 @@ namespace nonograms {
                 }
             }
             e.Graphics.DrawLine(Pens.LightGray, 0, GridHeight * CellSize, LeftPanel.Width * CellSize, GridHeight * CellSize);
+        }
+
+        private void Playground_FormClosed(object sender, FormClosedEventArgs e) {
+            
         }
     }
 }

@@ -69,12 +69,13 @@
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.GridPanel);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.Name = "Playground";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Playground";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Playground_FormClosed);
             this.Load += new System.EventHandler(this.Playground_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.gameGrid_Paint);
             this.ResumeLayout(false);
