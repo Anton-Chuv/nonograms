@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Data.SQLite;
+
+
 namespace nonograms {
     public class Level {
         public string Name;
@@ -11,10 +14,6 @@ namespace nonograms {
         public int[,] answerGrid;
         public List<int>[] topNumberColumns;
         public List<int>[] leftNumberRows;
-        public int[,] getLevelGrid() { return answerGrid; } // TODO change to levelGrid
-        public string getName() { return Name; }
-        public List<int>[] getLeftNumRows() { return leftNumberRows; }
-        public List<int>[] getTopNumCols() { return topNumberColumns; }
         public Level() {
             // тестовый уровень
             Name = "Cup";
@@ -53,7 +52,6 @@ namespace nonograms {
                 }
             }
         }
-
         void fillTopNumberColumns(int[,] levelGrid) {
             topNumberColumns = new List<int>[levelGrid.GetLength(1)];
             for (int i = 0; i < levelGrid.GetLength(1); i++) {
@@ -79,8 +77,30 @@ namespace nonograms {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var currentLevel = new Level();
-            //Application.Run(new Playground(currentLevel));
+
+            Level level = new Level();
+            char[,] ansToChar = new char[level.answerGrid.GetLength(0), level.answerGrid.GetLength(1)];
+            for (int i = 0; i < level.answerGrid.GetLength(0); i++) 
+                for (int j = 0; j < level.answerGrid.GetLength(1); j++)
+                    ansToChar[i,j] = Convert.ToChar(level.answerGrid[i, j]);
+            Console.WriteLine(ansToChar);
+
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand();
+                command.Connection = connection;
+                command.CommandText = "CREATE TABLE IF NOT EXISTS Users(" +
+                    "_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
+                    "Name TEXT NOT NULL, " +
+                    "Height INTEGER NOT NULL, " +
+                    "Width INTEGER NOT NULL, " +
+                    "Answer TEXT NOT NULL" +
+                    ")";
+                command.ExecuteNonQuery();
+                command.CommandText = $"INSERT INTO users (Name, Height, Width, Answer) " +
+                                                 $"VALUES ('{level.Name}',{level.answerGrid}";
+            }
+
             Application.Run(new MainWindow());
         }
     }
