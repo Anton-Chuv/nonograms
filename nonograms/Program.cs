@@ -110,8 +110,24 @@ namespace nonograms {
                 command.ExecuteNonQuery();
                 */
             }
+            List<string> Names = new List<string>();
+            string sqlExpression = "SELECT Name FROM nonogramlevels";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
 
-            Application.Run(new MainWindow());
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) // если есть данные
+                    {
+                        while (reader.Read())   // построчно считываем данные
+                        {
+                            string name = (string)reader.GetValue(0);
+                            Names.Add(name);
+                        }
+                    }
+                }
+            }
+            Application.Run(new MainWindow(Names));
         }
     }
 }

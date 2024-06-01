@@ -14,12 +14,13 @@ using System.Runtime.CompilerServices;
 
 namespace nonograms {
 
+
     public partial class Playground : Form {
         int GridHeight;
         int GridWidth;
         char[,] GridGame;
         char[,] GridAns;
-        int levelId;
+        string levelName;
 
         List<int>[] leftNumRows;
         List<int>[] topNumCols;
@@ -52,10 +53,10 @@ namespace nonograms {
 
         }
 
-        public Playground(int id) {
+        public Playground(String name) {
             InitializeComponent();
-            levelId = id;
-            string sqlExpression = "SELECT * FROM nonogramlevels where _id = 0";
+            levelName = name;
+            string sqlExpression = $"SELECT * FROM nonogramlevels where name = '{name}'";
             using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
                 connection.Open();
 
@@ -63,18 +64,18 @@ namespace nonograms {
                 using (SQLiteDataReader reader = command.ExecuteReader()) {
                     if (reader.HasRows) {
                         reader.Read();
-                        string name = (string)reader.GetValue(1);
+                        //string name = (string)reader.GetValue(0);
                         this.Text = name;
-                        int height = reader.GetInt32(2);
+                        int height = reader.GetInt32(1);
                         this.GridHeight = height;
-                        var width = reader.GetInt32(3);
+                        var width = reader.GetInt32(2);
                         this.GridWidth = width;
-                        string answer = (string)reader.GetValue(4);
+                        string answer = (string)reader.GetValue(3);
                         this.GridAns = new char[height, width];
                         for (int i = 0; i < height; i++)
                             for (int j = 0; j < width; j++)
                                 this.GridAns[i,j] = answer[i*width + j];
-                        string progress = (string)reader.GetValue(5);
+                        string progress = (string)reader.GetValue(4);
                         this.GridGame = new char[height, width];
                         for (int i = 0; i < height; i++)
                             for (int j = 0; j < width; j++)
@@ -208,7 +209,7 @@ namespace nonograms {
                 string progressStr = "";
                 foreach (char x in GridGame)
                     progressStr += x;
-                command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where _id = {this.levelId}";
+                command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{this.levelName}'";
                 command.ExecuteNonQuery();
                 Console.WriteLine("Прогресс сохранен");
             }
