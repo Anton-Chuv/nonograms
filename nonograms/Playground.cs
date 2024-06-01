@@ -2,37 +2,37 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace nonograms {
 
     public partial class Playground : Form {
         int GridHeight;
         int GridWidth;
-        int[,] GridGame;
+        char[,] GridGame;
+        char[,] GridAns;
+
         List<int>[] leftNumRows;
         List<int>[] topNumCols;
-        int CellSize = 20;
         int maxLeftRowLen = 0;
         int maxTopColLen = 0;
 
-        public Playground() {
-            InitializeComponent();
-            Text = "Cup";
-            this.Size = new System.Drawing.Size(300,300);
-        }
-
+        int CellSize = 20;
         public Playground(Level level) {
             InitializeComponent();
             Text = level.Name;
-            this.GridGame = level.levelGrid;
+            // this.GridGame = level.levelGrid;
             this.GridHeight = level.levelGrid.GetLength(0);
             this.GridWidth = level.levelGrid.GetLength(1);
+
             this.leftNumRows = level.leftNumberRows;
             this.maxLeftRowLen = 0;
             for (int i = 0; i < leftNumRows.Length; i++)
@@ -51,6 +51,50 @@ namespace nonograms {
 
         }
 
+        public Playground(int id) {
+            InitializeComponent();
+            string sqlExpression = "SELECT * FROM nonogramlevels where _id = 0";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) {
+                        reader.Read();
+                        string name = (string)reader.GetValue(1);
+                        this.Text = name;
+                        int height = reader.GetInt32(2);
+                        this.GridHeight = height;
+                        var width = reader.GetInt32(3);
+                        this.GridWidth = width;
+                        string answer = (string)reader.GetValue(4);
+                        this.GridAns = new char[height, width];
+                        for (int i = 0; i < height; i++)
+                            for (int j = 0; j < width; j++)
+                                this.GridAns[i,j] = answer[i*width + j];
+                        string progress = (string)reader.GetValue(5);
+                        this.GridGame = new char[height, width];
+                        for (int i = 0; i < height; i++)
+                            for (int j = 0; j < width; j++)
+                                this.GridGame[i, j] = progress[i * width + j];
+                    }
+                }
+            }
+            fillLeftNumberRows(this.GridAns);
+            fillTopNumberColumns(this.GridAns);
+            this.maxLeftRowLen = 0;
+            for (int i = 0; i < leftNumRows.Length; i++)
+                if (leftNumRows[i].Count > maxLeftRowLen)
+                    maxLeftRowLen = leftNumRows[i].Count;
+            this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
+
+            this.maxTopColLen = 0;
+            for (int i = 0; i < topNumCols.Length; i++)
+                if (topNumCols[i].Count > maxTopColLen)
+                    maxTopColLen = topNumCols[i].Count;
+            this.TopPanel.Height = maxTopColLen; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
+        }
+
         private void Playground_Load(object sender, EventArgs e) {
 
             this.TopPanel.Size = new Size(this.GridWidth * CellSize + 1, this.TopPanel.Height * CellSize + 1);
@@ -66,7 +110,36 @@ namespace nonograms {
             this.Size = new Size(LeftPanel.Width + GridPanel.Width, TopPanel.Height + GridPanel.Height);
         }
 
-
+        void fillLeftNumberRows(char[,] levelGrid) {
+            leftNumRows = new List<int>[levelGrid.GetLength(0)];
+            for (int i = 0; i < levelGrid.GetLength(0); i++) {
+                leftNumRows[i] = new List<int>();
+                for (int j = 0; j < levelGrid.GetLength(1); j++) {
+                    int lenFilledCell = 0;
+                    while (j < levelGrid.GetLength(1) && this.GridAns[i, j] == '1') {
+                        lenFilledCell++;
+                        j++;
+                    }
+                    if (lenFilledCell > 0)
+                        leftNumRows[i].Add(lenFilledCell);
+                }
+            }
+        }
+        void fillTopNumberColumns(char[,] levelGrid) {
+            topNumCols = new List<int>[levelGrid.GetLength(1)];
+            for (int i = 0; i < levelGrid.GetLength(1); i++) {
+                topNumCols[i] = new List<int>();
+                for (int j = 0; j < levelGrid.GetLength(0); j++) {
+                    int lenFilledCell = 0;
+                    while (j < levelGrid.GetLength(0) && GridAns[j, i] == '1') {
+                        lenFilledCell++;
+                        j++;
+                    }
+                    if (lenFilledCell > 0)
+                        topNumCols[i].Add(lenFilledCell);
+                }
+            }
+        }
 
         Graphics g;
         private void gameGrid_Paint(object sender, PaintEventArgs e) {
@@ -93,7 +166,7 @@ namespace nonograms {
             SolidBrush blackBrush = new SolidBrush(Color.Black);
             for (int i = 0; i < GridHeight; i++)
                 for (int j = 0; j < GridWidth; j++)
-                    if (GridGame[i, j] == 1)
+                    if (GridGame[i, j] == '1')
                         e.Graphics.FillRectangle(blackBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
         }
         Point click;
@@ -105,8 +178,8 @@ namespace nonograms {
             if (click.Y % 20 == 0 || click.X % 20 == 0)
                 return;
             switch (GridGame[click.Y / 20, click.X / 20]) {
-                case 1:
-                    GridGame[click.Y / 20, click.X / 20] = 0;
+                case '1':
+                    GridGame[click.Y / 20, click.X / 20] = '0';
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
                         SolidBrush whiteBrush = new SolidBrush(Color.White);
 
@@ -114,8 +187,8 @@ namespace nonograms {
                         whiteBrush.Dispose();
                     }
                     break;
-                case 0:
-                    GridGame[click.Y / 20, click.X / 20] = 1;
+                case '0':
+                    GridGame[click.Y / 20, click.X / 20] = '1';
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
                         SolidBrush blackBrush = new SolidBrush(Color.Black);
 

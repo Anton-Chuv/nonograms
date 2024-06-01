@@ -80,25 +80,35 @@ namespace nonograms {
 
             Level level = new Level();
             char[,] ansToChar = new char[level.answerGrid.GetLength(0), level.answerGrid.GetLength(1)];
+            string ansStr = "";
+            string levelStr = "";
             for (int i = 0; i < level.answerGrid.GetLength(0); i++) 
                 for (int j = 0; j < level.answerGrid.GetLength(1); j++)
                     ansToChar[i,j] = Convert.ToChar(level.answerGrid[i, j]);
-            Console.WriteLine(ansToChar);
+            foreach (var x in level.answerGrid)
+                ansStr += x;
+            foreach (var y in level.levelGrid)
+                levelStr += y;
 
             using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand();
                 command.Connection = connection;
-                command.CommandText = "CREATE TABLE IF NOT EXISTS Users(" +
+                command.CommandText = 
+                    "CREATE TABLE IF NOT EXISTS nonogramlevels(" +
                     "_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
                     "Name TEXT NOT NULL, " +
                     "Height INTEGER NOT NULL, " +
                     "Width INTEGER NOT NULL, " +
-                    "Answer TEXT NOT NULL" +
+                    "Answer TEXT NOT NULL, " +
+                    "Progress TEXT NOT NULL" +
                     ")";
                 command.ExecuteNonQuery();
-                command.CommandText = $"INSERT INTO users (Name, Height, Width, Answer) " +
-                                                 $"VALUES ('{level.Name}',{level.answerGrid}";
+                /* тестовый уровень
+                command.CommandText = $"INSERT INTO nonogramlevels (Name, Height, Width, Answer, Progress) " +
+                    $"VALUES ('{level.Name}', {level.answerGrid.GetLength(0)}, {level.answerGrid.GetLength(1)}, '{ansStr}', '{levelStr}')";
+                command.ExecuteNonQuery();
+                */
             }
 
             Application.Run(new MainWindow());
