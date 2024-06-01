@@ -39,7 +39,7 @@
             // 
             // topPanel
             // 
-            this.topPanel.BackColor = System.Drawing.Color.MidnightBlue;
+            this.topPanel.BackColor = System.Drawing.Color.SkyBlue;
             this.topPanel.Controls.Add(this.button1);
             this.topPanel.Controls.Add(this.mainPanel);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -53,12 +53,13 @@
             this.button1.BackColor = System.Drawing.Color.RoyalBlue;
             this.button1.FlatAppearance.BorderSize = 0;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(47, 141);
+            this.button1.Location = new System.Drawing.Point(395, 450);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "1";
+            this.button1.Text = "sample level";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // mainPanel
             // 
@@ -106,6 +107,7 @@
             this.Controls.Add(this.topPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainWindow";
             this.topPanel.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);

@@ -2,48 +2,144 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace nonograms {
 
     public partial class Playground : Form {
         int GridHeight;
         int GridWidth;
-        int[,] GridGame;
+        char[,] GridGame;
+        char[,] GridAns;
+
+        List<int>[] leftNumRows;
+        List<int>[] topNumCols;
+        int maxLeftRowLen = 0;
+        int maxTopColLen = 0;
+
         int CellSize = 20;
-
-        public Playground() {
-            InitializeComponent();
-            Text = "Cup";
-            this.Size = new System.Drawing.Size(300,300);
-        }
-
         public Playground(Level level) {
             InitializeComponent();
-            Text = "Cup";
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.GridGame = level.getLevelGrid();
-            this.GridHeight = level.getLevelGrid().GetLength(0);
-            this.GridWidth = level.getLevelGrid().GetLength(1);
+            Text = level.Name;
+            // this.GridGame = level.levelGrid;
+            this.GridHeight = level.levelGrid.GetLength(0);
+            this.GridWidth = level.levelGrid.GetLength(1);
+
+            this.leftNumRows = level.leftNumberRows;
+            this.maxLeftRowLen = 0;
+            for (int i = 0; i < leftNumRows.Length; i++)
+                if (leftNumRows[i].Count > maxLeftRowLen)
+                    maxLeftRowLen = leftNumRows[i].Count;
+            this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
+
+            this.topNumCols = level.topNumberColumns;
+            this.maxTopColLen = 0;
+            for (int i = 0; i < topNumCols.Length; i++)
+                if (topNumCols[i].Count > maxTopColLen)
+                    maxTopColLen = topNumCols[i].Count;
+            this.TopPanel.Height = maxTopColLen; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
+
             // this.Size = new System.Drawing.Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
-            
+
+        }
+
+        public Playground(int id) {
+            InitializeComponent();
+            string sqlExpression = "SELECT * FROM nonogramlevels where _id = 0";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) {
+                        reader.Read();
+                        string name = (string)reader.GetValue(1);
+                        this.Text = name;
+                        int height = reader.GetInt32(2);
+                        this.GridHeight = height;
+                        var width = reader.GetInt32(3);
+                        this.GridWidth = width;
+                        string answer = (string)reader.GetValue(4);
+                        this.GridAns = new char[height, width];
+                        for (int i = 0; i < height; i++)
+                            for (int j = 0; j < width; j++)
+                                this.GridAns[i,j] = answer[i*width + j];
+                        string progress = (string)reader.GetValue(5);
+                        this.GridGame = new char[height, width];
+                        for (int i = 0; i < height; i++)
+                            for (int j = 0; j < width; j++)
+                                this.GridGame[i, j] = progress[i * width + j];
+                    }
+                }
+            }
+            fillLeftNumberRows(this.GridAns);
+            fillTopNumberColumns(this.GridAns);
+            this.maxLeftRowLen = 0;
+            for (int i = 0; i < leftNumRows.Length; i++)
+                if (leftNumRows[i].Count > maxLeftRowLen)
+                    maxLeftRowLen = leftNumRows[i].Count;
+            this.LeftPanel.Width = maxLeftRowLen; //                             (если собираешся испольсозовать правый верхний угол, чтобы он не был слишком маленьким))
+
+            this.maxTopColLen = 0;
+            for (int i = 0; i < topNumCols.Length; i++)
+                if (topNumCols[i].Count > maxTopColLen)
+                    maxTopColLen = topNumCols[i].Count;
+            this.TopPanel.Height = maxTopColLen; // нужен ли минимальный размер (наверно стоит сделать минимальный размер на всякий случий \
         }
 
         private void Playground_Load(object sender, EventArgs e) {
-            //this.Controls.Add( TopPanel );
-            //this.Controls.Add( GridPanel );
-            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
-            this.GridPanel.Location = new Point(this.Width - this.GridWidth * CellSize - 1, 
-                                                this.Height - this.GridHeight * CellSize - 1);
 
+            this.TopPanel.Size = new Size(this.GridWidth * CellSize + 1, this.TopPanel.Height * CellSize + 1);
+            this.LeftPanel.Size = new Size(this.LeftPanel.Width * CellSize + 1, this.GridHeight * CellSize + 1);
+            
+            this.LeftPanel.Location = new Point(0, TopPanel.Height);
+            this.TopPanel.Location = new Point(LeftPanel.Width, 0);
+
+
+            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
+            this.GridPanel.Location = new Point(LeftPanel.Width, TopPanel.Height);
+
+            this.Size = new Size(LeftPanel.Width + GridPanel.Width, TopPanel.Height + GridPanel.Height);
         }
 
-
+        void fillLeftNumberRows(char[,] levelGrid) {
+            leftNumRows = new List<int>[levelGrid.GetLength(0)];
+            for (int i = 0; i < levelGrid.GetLength(0); i++) {
+                leftNumRows[i] = new List<int>();
+                for (int j = 0; j < levelGrid.GetLength(1); j++) {
+                    int lenFilledCell = 0;
+                    while (j < levelGrid.GetLength(1) && this.GridAns[i, j] == '1') {
+                        lenFilledCell++;
+                        j++;
+                    }
+                    if (lenFilledCell > 0)
+                        leftNumRows[i].Add(lenFilledCell);
+                }
+            }
+        }
+        void fillTopNumberColumns(char[,] levelGrid) {
+            topNumCols = new List<int>[levelGrid.GetLength(1)];
+            for (int i = 0; i < levelGrid.GetLength(1); i++) {
+                topNumCols[i] = new List<int>();
+                for (int j = 0; j < levelGrid.GetLength(0); j++) {
+                    int lenFilledCell = 0;
+                    while (j < levelGrid.GetLength(0) && GridAns[j, i] == '1') {
+                        lenFilledCell++;
+                        j++;
+                    }
+                    if (lenFilledCell > 0)
+                        topNumCols[i].Add(lenFilledCell);
+                }
+            }
+        }
 
         Graphics g;
         private void gameGrid_Paint(object sender, PaintEventArgs e) {
@@ -63,14 +159,15 @@ namespace nonograms {
         }
         private void GridPanel_Paint(object sender, PaintEventArgs e) {
             for (int i = 0; i < GridWidth + 1; i++)
-                e.Graphics.DrawLine(Pens.Black, i * CellSize, 0, i * CellSize, GridHeight * CellSize);
+                e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, GridHeight * CellSize);
             for (int i = 0; i < GridHeight + 1; i++)
-                e.Graphics.DrawLine(Pens.Black, 0, i * CellSize, GridWidth * CellSize, i * CellSize);
+                e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, GridWidth * CellSize, i * CellSize);
+
             SolidBrush blackBrush = new SolidBrush(Color.Black);
             for (int i = 0; i < GridHeight; i++)
                 for (int j = 0; j < GridWidth; j++)
-                    if (GridGame[i, j] == 1)
-                        e.Graphics.FillRectangle(blackBrush, 2 + j * CellSize, 2 + i * CellSize, CellSize - 3, CellSize - 3);
+                    if (GridGame[i, j] == '1')
+                        e.Graphics.FillRectangle(blackBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
         }
         Point click;
 
@@ -81,27 +178,61 @@ namespace nonograms {
             if (click.Y % 20 == 0 || click.X % 20 == 0)
                 return;
             switch (GridGame[click.Y / 20, click.X / 20]) {
-                case 1:
-                    GridGame[click.Y / 20, click.X / 20] = 0;
+                case '1':
+                    GridGame[click.Y / 20, click.X / 20] = '0';
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
-                        SolidBrush whiteBrush = new SolidBrush(Color.WhiteSmoke);
+                        SolidBrush whiteBrush = new SolidBrush(Color.White);
 
-                        g.FillRectangle(whiteBrush, 2 + click.X - (click.X % CellSize), 2 + click.Y - (click.Y % CellSize), CellSize - 3, CellSize - 3);
+                        g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
                         whiteBrush.Dispose();
                     }
                     break;
-                case 0:
-                    GridGame[click.Y / 20, click.X / 20] = 1;
+                case '0':
+                    GridGame[click.Y / 20, click.X / 20] = '1';
                     using (Graphics g = this.GridPanel.CreateGraphics()) {
                         SolidBrush blackBrush = new SolidBrush(Color.Black);
 
-                        g.FillRectangle(blackBrush, 2 + click.X - (click.X % CellSize), 2 + click.Y - (click.Y % CellSize), CellSize - 3, CellSize - 3);
+                        g.FillRectangle(blackBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
                         blackBrush.Dispose();
                     }
                     break;
                 default:
                     break;
             }
+        }
+
+        private void TopPanel_Paint(object sender, PaintEventArgs e) {
+            for (int i = 0; i < GridWidth; i++) {
+                e.Graphics.DrawLine(Pens.LightGray, i * CellSize, 0, i * CellSize, TopPanel.Height * CellSize);
+                for (int j = 0; j < topNumCols[i].Count; j++) {
+                    Point p = new Point(i * CellSize + CellSize / 2,(j + (maxTopColLen - topNumCols[i].Count)) * CellSize + CellSize / 2);
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Center;
+
+                    e.Graphics.DrawString(topNumCols[i][j].ToString(), Font, new SolidBrush(Color.Black), p, sf);
+                }
+            }
+            e.Graphics.DrawLine(Pens.LightGray, GridWidth * CellSize, 0, GridWidth * CellSize, TopPanel.Height * CellSize);
+        }
+
+        private void LeftPanel_Paint(object sender, PaintEventArgs e) {
+            for (int i = 0; i < GridHeight; i++) {
+                e.Graphics.DrawLine(Pens.LightGray, 0, i * CellSize, LeftPanel.Width * CellSize, i * CellSize);
+                for (int j = 0; j < leftNumRows[i].Count; j++) {
+                    Point p = new Point((j + (maxLeftRowLen - leftNumRows[i].Count) ) * CellSize + CellSize / 2, i * CellSize + CellSize/2);
+                    StringFormat sf = new StringFormat();
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Center;
+
+                    e.Graphics.DrawString(leftNumRows[i][j].ToString(), Font, new SolidBrush(Color.Black), p, sf);
+                }
+            }
+            e.Graphics.DrawLine(Pens.LightGray, 0, GridHeight * CellSize, LeftPanel.Width * CellSize, GridHeight * CellSize);
+        }
+
+        private void Playground_FormClosed(object sender, FormClosedEventArgs e) {
+            
         }
     }
 }
