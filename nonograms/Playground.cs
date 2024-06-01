@@ -19,6 +19,7 @@ namespace nonograms {
         int GridWidth;
         char[,] GridGame;
         char[,] GridAns;
+        int levelId;
 
         List<int>[] leftNumRows;
         List<int>[] topNumCols;
@@ -53,6 +54,7 @@ namespace nonograms {
 
         public Playground(int id) {
             InitializeComponent();
+            levelId = id;
             string sqlExpression = "SELECT * FROM nonogramlevels where _id = 0";
             using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
                 connection.Open();
@@ -198,6 +200,17 @@ namespace nonograms {
                     break;
                 default:
                     break;
+            }
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand();
+                command.Connection = connection;
+                string progressStr = "";
+                foreach (char x in GridGame)
+                    progressStr += x;
+                command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where _id = {this.levelId}";
+                command.ExecuteNonQuery();
+                Console.WriteLine("Прогресс сохранен");
             }
         }
 

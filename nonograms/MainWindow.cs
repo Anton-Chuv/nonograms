@@ -36,7 +36,6 @@ namespace nonograms {
 
         private void button1_Click(object sender, EventArgs e) {
             this.Hide();
-            Level currentLevel = new Level();
             Playground levelform = new Playground(0);
             levelform.FormClosed += (object s, FormClosedEventArgs ev) => { this.Show(); };
             levelform.Show();
