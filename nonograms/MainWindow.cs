@@ -74,7 +74,8 @@ namespace nonograms {
 
                 Button btn = new Button();
                 btn.Text = "Запуск";
-                btn.BackColor = Color.MediumPurple;
+                btn.BackColor = Color.Green;
+                btn.ForeColor = Color.White;
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.AutoSize = true;
@@ -88,12 +89,32 @@ namespace nonograms {
                 };
                 topPanel.Controls.Add(btn);
 
+                Panel space = new Panel();
+                space.Location = new Point(0, i * 80 + 100);
+                space.Size = new Size(1, 1);
+                topPanel.Controls.Add(space);
+
                 i++;
             }
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
             topPanel.AutoScroll = true;
+        }
+        Point last;
+        private void HeadPanel_MouseMove(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
+                this.Left += e.X - last.X;
+                this.Top += e.Y - last.Y;
+            }
+        }
+
+        private void HeadPanel_MouseDown(object sender, MouseEventArgs e) {
+            last = new Point(e.X, e.Y);
+        }
+
+        private void CloseButton_Click(object sender, EventArgs e) {
+            Application.Exit();
         }
     }
 }
