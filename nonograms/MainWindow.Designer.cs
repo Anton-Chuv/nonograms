@@ -30,6 +30,8 @@
         {
             this.topPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.AddLevelBtn = new System.Windows.Forms.Button();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // topPanel
@@ -44,11 +46,25 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.RoyalBlue;
+            this.panel1.Controls.Add(this.AddLevelBtn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(300, 50);
             this.panel1.TabIndex = 1;
+            // 
+            // AddLevelBtn
+            // 
+            this.AddLevelBtn.BackColor = System.Drawing.Color.Lavender;
+            this.AddLevelBtn.FlatAppearance.BorderSize = 0;
+            this.AddLevelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AddLevelBtn.Location = new System.Drawing.Point(13, 13);
+            this.AddLevelBtn.Name = "AddLevelBtn";
+            this.AddLevelBtn.Size = new System.Drawing.Size(75, 24);
+            this.AddLevelBtn.TabIndex = 0;
+            this.AddLevelBtn.Text = "Добавить";
+            this.AddLevelBtn.UseVisualStyleBackColor = false;
+            this.AddLevelBtn.Click += new System.EventHandler(this.AddLevelBtn_Click);
             // 
             // MainWindow
             // 
@@ -61,6 +77,8 @@
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainWindow";
+            this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -68,5 +86,6 @@
         #endregion
         private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button AddLevelBtn;
     }
 }

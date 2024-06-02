@@ -228,36 +228,29 @@ namespace nonograms {
             click = new Point(e.X,e.Y);
             if (click.Y % 20 == 0 || click.X % 20 == 0)
                 return;
-            switch (GridGame[click.Y / 20, click.X / 20]) {
-                case '1':
+            switch (e.Button) {
+                case MouseButtons.Right:
                     drawing = new Thread(() => {
-                        while (!stop) {
-                            click = e.Location;
-                            Console.WriteLine(click.ToString());
-                            GridGame[click.Y / 20, click.X / 20] = '0';
-                            using (Graphics g = this.GridPanel.CreateGraphics()) {
-                                SolidBrush whiteBrush = new SolidBrush(Color.White);
-
+                        using (Graphics g = this.GridPanel.CreateGraphics()) {
+                            SolidBrush whiteBrush = new SolidBrush(Color.White);
+                            while (!stop) {
+                                try { GridGame[click.Y / 20, click.X / 20] = '0'; } catch { }
                                 g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
-                                whiteBrush.Dispose();
                             }
+                            whiteBrush.Dispose();
                         }
                     });
                     drawing.Start();
                     break;
-                case '0':
+                case MouseButtons.Left:
                     drawing = new Thread(() => {
-                        while (!stop) {
-                            click = e.Location;
-                            Console.WriteLine(click.ToString());
-
-                            GridGame[click.Y / 20, click.X / 20] = '1';
-                            using (Graphics g = this.GridPanel.CreateGraphics()) {
-                                SolidBrush blackBrush = new SolidBrush(Color.Black);
-
+                        using (Graphics g = this.GridPanel.CreateGraphics()) {
+                            SolidBrush blackBrush = new SolidBrush(Color.Black);
+                            while (!stop) {
+                                try { GridGame[click.Y / 20, click.X / 20] = '1'; } catch { }
                                 g.FillRectangle(blackBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
-                                blackBrush.Dispose();
                             }
+                            blackBrush.Dispose();
                         }
                     });
                     drawing.Start();
@@ -280,7 +273,6 @@ namespace nonograms {
                     progressStr += x;
                 command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{this.levelName}'";
                 command.ExecuteNonQuery();
-                Console.WriteLine("Прогресс сохранен");
             }
         }
 

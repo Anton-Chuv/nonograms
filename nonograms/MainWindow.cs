@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,51 @@ namespace nonograms {
     public partial class MainWindow : Form {
         public MainWindow(List<string> Names) {
             InitializeComponent();
-            Panel panel;
-            panel = new Panel();
-            panel.Location = new Point(200, 200);
-            topPanel.Controls.Add(panel);
+            AddCards(Names);
+
+        }
+
+        Point LastPoint;
+        private void mainLabel_MouseMove(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
+                this.Left += e.X - LastPoint.X;
+                this.Top += e.Y - LastPoint.Y;
+            }
+        }
+
+        private void mainLabel_MouseDown(object sender, MouseEventArgs e) {
+            LastPoint = new Point(e.X, e.Y);
+        }
+
+        private void AddLevelBtn_Click(object sender, EventArgs e) {
+            this.Hide();
+            AddForm addForm = new AddForm();
+            addForm.FormClosed += (object s, FormClosedEventArgs ev) => { this.Show(); AddCards(GetNames()); };
+            addForm.Show();
+
+        }
+
+        static List<string> GetNames() {
+            List<string> Names = new List<string>();
+            string sqlExpression = "SELECT Name FROM nonogramlevels";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) // если есть данные
+                    {
+                        while (reader.Read())   // построчно считываем данные
+                        {
+                            string name = (string)reader.GetValue(0);
+                            Names.Add(name);
+                        }
+                    }
+                }
+            }
+            return Names;
+        }
+        private void AddCards(List<string> Names) {
             int i = 0;
             List<Label> labels = new List<Label>();
             List<Button> buttons = new List<Button>();
@@ -49,34 +91,9 @@ namespace nonograms {
                 i++;
             }
         }
-        
-        
 
-        private void closeButton_Click(object sender, EventArgs e) {
-            this.Close();
-        }
-
-        Point LastPoint;
-        private void mainLabel_MouseMove(object sender, MouseEventArgs e) {
-            if (e.Button == MouseButtons.Left) {
-                this.Left += e.X - LastPoint.X;
-                this.Top += e.Y - LastPoint.Y;
-            }
-        }
-
-        private void mainLabel_MouseDown(object sender, MouseEventArgs e) {
-            LastPoint = new Point(e.X, e.Y);
-        }
-
-        private void mainLabel_Click(object sender, EventArgs e) {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e) {
-            this.Hide();
-            Playground levelform = new Playground("Cup");
-            levelform.FormClosed += (object s, FormClosedEventArgs ev) => { this.Show(); };
-            levelform.Show();
+        private void MainWindow_Load(object sender, EventArgs e) {
+            topPanel.AutoScroll = true;
         }
     }
 }

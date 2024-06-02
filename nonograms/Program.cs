@@ -109,7 +109,10 @@ namespace nonograms {
                     $"VALUES ('{level.Name}', {level.answerGrid.GetLength(0)}, {level.answerGrid.GetLength(1)}, '{ansStr}', '{levelStr}')";
                 command.ExecuteNonQuery();
                 */
-            }
+            }      
+            Application.Run(new MainWindow(GetNames()));
+        }
+        static List<string> GetNames() {
             List<string> Names = new List<string>();
             string sqlExpression = "SELECT Name FROM nonogramlevels";
             using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
@@ -127,7 +130,7 @@ namespace nonograms {
                     }
                 }
             }
-            Application.Run(new MainWindow(Names));
+            return Names;
         }
     }
 }
