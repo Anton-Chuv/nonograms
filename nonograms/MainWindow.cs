@@ -27,15 +27,17 @@ namespace nonograms {
                 label.Text = name;
                 label.BackColor = Color.Transparent;
                 label.Font = new Font(label.Font.FontFamily, 20, FontStyle.Regular);
-                label.Location = new Point(20, i * 100 + 20);
+                label.Location = new Point(20, i * 80 + 15);
                 topPanel.Controls.Add(label);
 
                 Button btn = new Button();
                 btn.Text = "Запуск";
+                btn.BackColor = Color.MediumPurple;
+                btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.AutoSize = true;
                 buttons.Add(btn);
-                btn.Location = new Point(20, i * 100 + 70);
+                btn.Location = new Point(25, i * 80 + 55);
                 btn.Click += (object s, EventArgs ev) => {
                     this.Hide();
                     Playground levelform = new Playground(name);

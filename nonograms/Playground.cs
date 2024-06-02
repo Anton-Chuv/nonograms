@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Threading;
+
+
 
 namespace nonograms {
 
@@ -26,6 +29,9 @@ namespace nonograms {
         List<int>[] topNumCols;
         int maxLeftRowLen = 0;
         int maxTopColLen = 0;
+
+        Thread drawing = null;
+        bool stop = false;
 
         int CellSize = 20;
         public Playground(Level level) {
@@ -111,6 +117,8 @@ namespace nonograms {
             this.GridPanel.Location = new Point(LeftPanel.Width, TopPanel.Height);
 
             this.Size = new Size(LeftPanel.Width + GridPanel.Width, TopPanel.Height + GridPanel.Height);
+            this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
+
         }
 
         void fillLeftNumberRows(char[,] levelGrid) {
@@ -177,42 +185,7 @@ namespace nonograms {
         private void GridPanel_MouseClick(object sender, MouseEventArgs e) {
             // TODO пока реагирует только на единичное нажатие, добавь ЗАЖАТИЕ
             // TODO2 левая и правая кнопка мыши работают одинаково, исправь
-            click = e.Location;
-            if (click.Y % 20 == 0 || click.X % 20 == 0)
-                return;
-            switch (GridGame[click.Y / 20, click.X / 20]) {
-                case '1':
-                    GridGame[click.Y / 20, click.X / 20] = '0';
-                    using (Graphics g = this.GridPanel.CreateGraphics()) {
-                        SolidBrush whiteBrush = new SolidBrush(Color.White);
-
-                        g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
-                        whiteBrush.Dispose();
-                    }
-                    break;
-                case '0':
-                    GridGame[click.Y / 20, click.X / 20] = '1';
-                    using (Graphics g = this.GridPanel.CreateGraphics()) {
-                        SolidBrush blackBrush = new SolidBrush(Color.Black);
-
-                        g.FillRectangle(blackBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
-                        blackBrush.Dispose();
-                    }
-                    break;
-                default:
-                    break;
-            }
-            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
-                connection.Open();
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
-                string progressStr = "";
-                foreach (char x in GridGame)
-                    progressStr += x;
-                command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{this.levelName}'";
-                command.ExecuteNonQuery();
-                Console.WriteLine("Прогресс сохранен");
-            }
+            
         }
 
         private void TopPanel_Paint(object sender, PaintEventArgs e) {
@@ -247,6 +220,72 @@ namespace nonograms {
 
         private void Playground_FormClosed(object sender, FormClosedEventArgs e) {
             
+        }
+
+        private void GridPanel_MouseDown(object sender, MouseEventArgs e) {
+            stop = false;
+
+            click = new Point(e.X,e.Y);
+            if (click.Y % 20 == 0 || click.X % 20 == 0)
+                return;
+            switch (GridGame[click.Y / 20, click.X / 20]) {
+                case '1':
+                    drawing = new Thread(() => {
+                        while (!stop) {
+                            click = e.Location;
+                            Console.WriteLine(click.ToString());
+                            GridGame[click.Y / 20, click.X / 20] = '0';
+                            using (Graphics g = this.GridPanel.CreateGraphics()) {
+                                SolidBrush whiteBrush = new SolidBrush(Color.White);
+
+                                g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
+                                whiteBrush.Dispose();
+                            }
+                        }
+                    });
+                    drawing.Start();
+                    break;
+                case '0':
+                    drawing = new Thread(() => {
+                        while (!stop) {
+                            click = e.Location;
+                            Console.WriteLine(click.ToString());
+
+                            GridGame[click.Y / 20, click.X / 20] = '1';
+                            using (Graphics g = this.GridPanel.CreateGraphics()) {
+                                SolidBrush blackBrush = new SolidBrush(Color.Black);
+
+                                g.FillRectangle(blackBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
+                                blackBrush.Dispose();
+                            }
+                        }
+                    });
+                    drawing.Start();
+
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+
+        private void GridPanel_MouseUp(object sender, MouseEventArgs e) {
+            stop = true;
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand();
+                command.Connection = connection;
+                string progressStr = "";
+                foreach (char x in GridGame)
+                    progressStr += x;
+                command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{this.levelName}'";
+                command.ExecuteNonQuery();
+                Console.WriteLine("Прогресс сохранен");
+            }
+        }
+
+        private void GridPanel_MouseMove(object sender, MouseEventArgs e) {
+            click = new Point(e.X, e.Y);
         }
     }
 }
