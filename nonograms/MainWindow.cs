@@ -60,12 +60,9 @@ namespace nonograms {
         }
         private void AddCards(List<string> Names) {
             int i = 0;
-            List<Label> labels = new List<Label>();
-            List<Button> buttons = new List<Button>();
             foreach (string name in Names) {
                 Label label = new Label();
                 label.AutoSize = true;
-                labels.Add(label);
                 label.Text = name;
                 label.BackColor = Color.Transparent;
                 label.Font = new Font(label.Font.FontFamily, 20, FontStyle.Regular);
@@ -79,7 +76,6 @@ namespace nonograms {
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.AutoSize = true;
-                buttons.Add(btn);
                 btn.Location = new Point(25, i * 80 + 55);
                 btn.Click += (object s, EventArgs ev) => {
                     this.Hide();
@@ -88,6 +84,37 @@ namespace nonograms {
                     levelform.Show();
                 };
                 topPanel.Controls.Add(btn);
+
+                Button btnRst = new Button();
+                btnRst.Text = "Сбросить";
+                btnRst.BackColor = Color.LightBlue;
+                //btnRst.FlatAppearance.BorderSize = 0;
+                btnRst.FlatStyle = FlatStyle.Flat;
+                btnRst.AutoSize = true;
+                btnRst.Location = new Point(125, i * 80 + 55);
+                btnRst.Click += (object s, EventArgs ev) => {
+                    string sqlExpression = $"SELECT * FROM nonogramlevels where name = '{name}'";
+                    int len = 0;
+                    using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                        connection.Open();
+                        SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                        using (SQLiteDataReader reader = command.ExecuteReader()) {
+                            if (reader.HasRows) {
+                                reader.Read();
+                                //string name = (string)reader.GetValue(0);
+                                int height = reader.GetInt32(1);
+                                var width = reader.GetInt32(2);
+                                len = height * width;
+                            }
+                        }
+                        string progressStr = "";
+                        for (int j = 0; j < len; j++)
+                            progressStr += '0';
+                        command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{name}'";
+                        command.ExecuteNonQuery();
+                    }
+                };
+                topPanel.Controls.Add(btnRst);
 
                 Panel space = new Panel();
                 space.Location = new Point(0, i * 80 + 100);
