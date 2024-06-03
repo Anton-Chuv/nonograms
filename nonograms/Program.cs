@@ -14,6 +14,9 @@ namespace nonograms {
         public int[,] answerGrid;
         public List<int>[] topNumberColumns;
         public List<int>[] leftNumberRows;
+        public class ColorList {
+
+        }
         public Level() {
             // тестовый уровень
             Name = "Cup";

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,14 @@ using System.Windows.Forms;
 
 
 namespace nonograms {
+
     public partial class MainWindow : Form {
         List<Button> buttons = new List<Button>();
         List<Label> labels = new List<Label>();
         public MainWindow(List<string> Names) {
             InitializeComponent();
+            this.SetStyle(ControlStyles.Selectable, false);
+
             AddCards(Names);
 
         }
@@ -80,7 +84,7 @@ namespace nonograms {
                 label.Text = name;
                 label.BackColor = Color.Transparent;
                 label.Font = new Font(label.Font.FontFamily, 20, FontStyle.Regular);
-                label.Location = new Point(20, i * 80 + 15);
+                label.Location = new Point(20, i * 80 + 15 + 40);
                 topPanel.Controls.Add(label);
                 labels.Add(label);
 
@@ -91,7 +95,7 @@ namespace nonograms {
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.AutoSize = true;
-                btn.Location = new Point(25, i * 80 + 55);
+                btn.Location = new Point(25, i * 80 + 55 + 40);
                 btn.Click += (object s, EventArgs ev) => {
                     this.Hide();
                     Playground levelform = new Playground(name);
@@ -107,7 +111,7 @@ namespace nonograms {
                 btnRst.FlatAppearance.BorderSize = 0;
                 btnRst.FlatStyle = FlatStyle.Flat;
                 btnRst.AutoSize = true;
-                btnRst.Location = new Point(110, i * 80 + 55);
+                btnRst.Location = new Point(110, i * 80 + 55 + 40);
                 btnRst.Click += (object s, EventArgs ev) => {
                     string sqlExpression = $"SELECT * FROM nonogramlevels where name = '{name}'";
                     int len = 0;
@@ -140,7 +144,7 @@ namespace nonograms {
                 btnDlt.FlatAppearance.BorderSize = 0;
                 btnDlt.FlatStyle = FlatStyle.Flat;
                 btnDlt.AutoSize = true;
-                btnDlt.Location = new Point(195, i * 80 + 55);
+                btnDlt.Location = new Point(195, i * 80 + 55 + 40);
                 btnDlt.Click += (object s, EventArgs ev) => {
                     using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
                         connection.Open();
@@ -156,7 +160,7 @@ namespace nonograms {
                 buttons.Add(btnDlt);
 
                 Panel space = new Panel();
-                space.Location = new Point(0, i * 80 + 100);
+                space.Location = new Point(0, i * 80 + 100 + 40);
                 space.Size = new Size(1, 1);
                 topPanel.Controls.Add(space);
 
@@ -166,6 +170,7 @@ namespace nonograms {
 
         private void MainWindow_Load(object sender, EventArgs e) {
             topPanel.AutoScroll = true;
+
         }
         Point last;
         private void HeadPanel_MouseMove(object sender, MouseEventArgs e) {
@@ -185,6 +190,14 @@ namespace nonograms {
 
         private void label1_Click(object sender, EventArgs e) {
 
+        }
+    }
+    public class RoundButton : Button {
+        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
+            GraphicsPath grPath = new GraphicsPath();
+            grPath.AddEllipse(0, 0, ClientSize.Width, ClientSize.Height);
+            this.Region = new System.Drawing.Region(grPath);
+            base.OnPaint(e);
         }
     }
 }

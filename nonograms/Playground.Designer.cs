@@ -26,6 +26,8 @@
             this.GridPanel = new System.Windows.Forms.Panel();
             this.TopPanel = new System.Windows.Forms.Panel();
             this.LeftPanel = new System.Windows.Forms.Panel();
+            this.ColorPanel = new System.Windows.Forms.Panel();
+            this.ColorBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // GridPanel
@@ -62,12 +64,33 @@
             this.LeftPanel.TabIndex = 1;
             this.LeftPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LeftPanel_Paint);
             // 
+            // ColorPanel
+            // 
+            this.ColorPanel.BackColor = System.Drawing.Color.Black;
+            this.ColorPanel.Location = new System.Drawing.Point(12, 12);
+            this.ColorPanel.Name = "ColorPanel";
+            this.ColorPanel.Size = new System.Drawing.Size(20, 20);
+            this.ColorPanel.TabIndex = 12;
+            // 
+            // ColorBox
+            // 
+            this.ColorBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.ColorBox.FormattingEnabled = true;
+            this.ColorBox.Location = new System.Drawing.Point(38, 12);
+            this.ColorBox.Name = "ColorBox";
+            this.ColorBox.Size = new System.Drawing.Size(112, 27);
+            this.ColorBox.TabIndex = 13;
+            this.ColorBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ColorBox_DrawItem);
+            this.ColorBox.SelectedIndexChanged += new System.EventHandler(this.ColorBox_SelectedIndexChanged);
+            // 
             // Playground
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(850, 689);
+            this.Controls.Add(this.ColorBox);
+            this.Controls.Add(this.ColorPanel);
             this.Controls.Add(this.LeftPanel);
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.GridPanel);
@@ -90,5 +113,7 @@
         private System.Windows.Forms.Panel GridPanel;
         private System.Windows.Forms.Panel TopPanel;
         private System.Windows.Forms.Panel LeftPanel;
+        private System.Windows.Forms.Panel ColorPanel;
+        private System.Windows.Forms.ComboBox ColorBox;
     }
 }

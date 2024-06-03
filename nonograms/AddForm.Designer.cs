@@ -32,6 +32,8 @@
             this.SaveBtn = new System.Windows.Forms.Button();
             this.NameBox = new System.Windows.Forms.TextBox();
             this.NameLabel = new System.Windows.Forms.Label();
+            this.ColorBox = new System.Windows.Forms.ComboBox();
+            this.ColorPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.numericH)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericW)).BeginInit();
             this.SuspendLayout();
@@ -54,7 +56,7 @@
             // 
             this.numericH.Location = new System.Drawing.Point(75, 10);
             this.numericH.Minimum = new decimal(new int[] {
-            10,
+            5,
             0,
             0,
             0});
@@ -72,7 +74,7 @@
             // 
             this.numericW.Location = new System.Drawing.Point(75, 40);
             this.numericW.Minimum = new decimal(new int[] {
-            10,
+            5,
             0,
             0,
             0});
@@ -117,6 +119,7 @@
             this.ReloadGridBtn.TabIndex = 6;
             this.ReloadGridBtn.Text = "S";
             this.ReloadGridBtn.UseVisualStyleBackColor = false;
+            this.ReloadGridBtn.Click += new System.EventHandler(this.ReloadGridBtn_Click);
             // 
             // SaveBtn
             // 
@@ -124,9 +127,9 @@
             this.SaveBtn.FlatAppearance.BorderSize = 0;
             this.SaveBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveBtn.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.SaveBtn.Location = new System.Drawing.Point(105, 100);
+            this.SaveBtn.Location = new System.Drawing.Point(155, 101);
             this.SaveBtn.Name = "SaveBtn";
-            this.SaveBtn.Size = new System.Drawing.Size(70, 20);
+            this.SaveBtn.Size = new System.Drawing.Size(20, 20);
             this.SaveBtn.TabIndex = 7;
             this.SaveBtn.Text = "Сохранить";
             this.SaveBtn.UseVisualStyleBackColor = false;
@@ -150,11 +153,32 @@
             this.NameLabel.TabIndex = 9;
             this.NameLabel.Text = "Название";
             // 
+            // ColorBox
+            // 
+            this.ColorBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.ColorBox.FormattingEnabled = true;
+            this.ColorBox.Location = new System.Drawing.Point(37, 101);
+            this.ColorBox.Name = "ColorBox";
+            this.ColorBox.Size = new System.Drawing.Size(112, 21);
+            this.ColorBox.TabIndex = 10;
+            this.ColorBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox1_DrawItem);
+            this.ColorBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // ColorPanel
+            // 
+            this.ColorPanel.BackColor = System.Drawing.Color.Black;
+            this.ColorPanel.Location = new System.Drawing.Point(13, 100);
+            this.ColorPanel.Name = "ColorPanel";
+            this.ColorPanel.Size = new System.Drawing.Size(20, 20);
+            this.ColorPanel.TabIndex = 11;
+            // 
             // AddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(200, 200);
+            this.Controls.Add(this.ColorPanel);
+            this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.NameLabel);
             this.Controls.Add(this.NameBox);
             this.Controls.Add(this.SaveBtn);
@@ -164,7 +188,7 @@
             this.Controls.Add(this.numericW);
             this.Controls.Add(this.numericH);
             this.Controls.Add(this.GridPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "AddForm";
             this.Text = "AddForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddForm_FormClosed);
@@ -187,5 +211,7 @@
         private System.Windows.Forms.Button SaveBtn;
         private System.Windows.Forms.TextBox NameBox;
         private System.Windows.Forms.Label NameLabel;
+        private System.Windows.Forms.ComboBox ColorBox;
+        private System.Windows.Forms.Panel ColorPanel;
     }
 }
