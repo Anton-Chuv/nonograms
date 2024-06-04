@@ -299,6 +299,9 @@ namespace nonograms {
 
             char[,] NewGridGame;
             NewGridGame = new char[GridHeight, GridWidth];
+            for (int i = 0; i < GridHeight; i++)
+                for (int j = 0; j < GridWidth; j++)
+                    NewGridGame[i, j] = '0';
             for (int i = 0; i < GridHeight && i < GridGame.GetLength(0); i++)
                 for (int j = 0; j < GridWidth && j < GridGame.GetLength(1); j++)
                     NewGridGame[i, j] = GridGame[i, j];
