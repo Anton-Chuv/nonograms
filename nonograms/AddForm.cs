@@ -169,6 +169,12 @@ namespace nonograms {
         }
 
         void SaveBtn_Click(object sender, EventArgs e) {
+            if (GetNames().Contains(Name)) {
+                MessageBox.Show("Название занято\nВыберети другое", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                return;
+            }
+
             string progressStr = "";
             string ansStr = "";
             foreach (char x in GridGame) {
@@ -186,6 +192,7 @@ namespace nonograms {
                 command.ExecuteNonQuery();
 
             }
+            this.Close();
         }
 
         private void AddForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -298,6 +305,26 @@ namespace nonograms {
             GridGame = NewGridGame;
             this.Refresh();
 
+        }
+        static List<string> GetNames() {
+            List<string> Names = new List<string>();
+            string sqlExpression = "SELECT Name FROM nonogramlevels";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) // если есть данные
+                    {
+                        while (reader.Read())   // построчно считываем данные
+                        {
+                            string name = (string)reader.GetValue(0);
+                            Names.Add(name);
+                        }
+                    }
+                }
+            }
+            return Names;
         }
     }
 }

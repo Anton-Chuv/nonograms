@@ -28,12 +28,12 @@
             this.numericW = new System.Windows.Forms.NumericUpDown();
             this.labelW = new System.Windows.Forms.Label();
             this.labelH = new System.Windows.Forms.Label();
-            this.ReloadGridBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.NameBox = new System.Windows.Forms.TextBox();
             this.NameLabel = new System.Windows.Forms.Label();
             this.ColorBox = new System.Windows.Forms.ComboBox();
             this.ColorPanel = new System.Windows.Forms.Panel();
+            this.ReloadGridBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericH)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericW)).BeginInit();
             this.SuspendLayout();
@@ -108,28 +108,15 @@
             this.labelH.TabIndex = 5;
             this.labelH.Text = "Высота";
             // 
-            // ReloadGridBtn
-            // 
-            this.ReloadGridBtn.BackColor = System.Drawing.Color.DarkSeaGreen;
-            this.ReloadGridBtn.FlatAppearance.BorderSize = 0;
-            this.ReloadGridBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ReloadGridBtn.Location = new System.Drawing.Point(125, 10);
-            this.ReloadGridBtn.Name = "ReloadGridBtn";
-            this.ReloadGridBtn.Size = new System.Drawing.Size(50, 50);
-            this.ReloadGridBtn.TabIndex = 6;
-            this.ReloadGridBtn.Text = "S";
-            this.ReloadGridBtn.UseVisualStyleBackColor = false;
-            this.ReloadGridBtn.Click += new System.EventHandler(this.ReloadGridBtn_Click);
-            // 
             // SaveBtn
             // 
             this.SaveBtn.BackColor = System.Drawing.Color.SpringGreen;
             this.SaveBtn.FlatAppearance.BorderSize = 0;
             this.SaveBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveBtn.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.SaveBtn.Location = new System.Drawing.Point(155, 101);
+            this.SaveBtn.Location = new System.Drawing.Point(100, 101);
             this.SaveBtn.Name = "SaveBtn";
-            this.SaveBtn.Size = new System.Drawing.Size(20, 20);
+            this.SaveBtn.Size = new System.Drawing.Size(75, 20);
             this.SaveBtn.TabIndex = 7;
             this.SaveBtn.Text = "Сохранить";
             this.SaveBtn.UseVisualStyleBackColor = false;
@@ -156,10 +143,11 @@
             // ColorBox
             // 
             this.ColorBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.ColorBox.DropDownWidth = 100;
             this.ColorBox.FormattingEnabled = true;
             this.ColorBox.Location = new System.Drawing.Point(37, 101);
             this.ColorBox.Name = "ColorBox";
-            this.ColorBox.Size = new System.Drawing.Size(112, 21);
+            this.ColorBox.Size = new System.Drawing.Size(17, 21);
             this.ColorBox.TabIndex = 10;
             this.ColorBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox1_DrawItem);
             this.ColorBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
@@ -169,8 +157,21 @@
             this.ColorPanel.BackColor = System.Drawing.Color.Black;
             this.ColorPanel.Location = new System.Drawing.Point(13, 100);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(20, 20);
+            this.ColorPanel.Size = new System.Drawing.Size(21, 21);
             this.ColorPanel.TabIndex = 11;
+            // 
+            // ReloadGridBtn
+            // 
+            this.ReloadGridBtn.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.ReloadGridBtn.FlatAppearance.BorderSize = 0;
+            this.ReloadGridBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ReloadGridBtn.Image = global::nonograms.Properties.Resources._2849811_refresh_arrows_multimedia_media_icon;
+            this.ReloadGridBtn.Location = new System.Drawing.Point(125, 10);
+            this.ReloadGridBtn.Name = "ReloadGridBtn";
+            this.ReloadGridBtn.Size = new System.Drawing.Size(50, 50);
+            this.ReloadGridBtn.TabIndex = 6;
+            this.ReloadGridBtn.UseVisualStyleBackColor = false;
+            this.ReloadGridBtn.Click += new System.EventHandler(this.ReloadGridBtn_Click);
             // 
             // AddForm
             // 

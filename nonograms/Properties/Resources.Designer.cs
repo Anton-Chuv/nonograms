@@ -63,6 +63,46 @@ namespace nonograms.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _1519779_brush_colorful_office_paint_painting_icon {
+            get {
+                object obj = ResourceManager.GetObject("1519779_brush_colorful_office_paint_painting_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _2849811_refresh_arrows_multimedia_media_icon {
+            get {
+                object obj = ResourceManager.GetObject("2849811_refresh_arrows_multimedia_media_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _4829864_arrow_back_left_icon {
+            get {
+                object obj = ResourceManager.GetObject("4829864_arrow_back_left_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _4829864_arrow_back_left_icon__1_ {
+            get {
+                object obj = ResourceManager.GetObject("4829864_arrow_back_left_icon (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap add_plus_icon {
             get {
                 object obj = ResourceManager.GetObject("add_plus_icon", resourceCulture);

@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Xml.Linq;
+using System.Diagnostics;
 
 
 
@@ -118,18 +120,20 @@ namespace nonograms {
             if (usedColors.Contains('К'))
                 this.ColorBox.Items.Add("Красный");
             if (usedColors.Contains('О'))
-            this.ColorBox.Items.Add("Оранжевый");
+                this.ColorBox.Items.Add("Оранжевый");
             if (usedColors.Contains('Ж'))
-            this.ColorBox.Items.Add("Желтый");
+                this.ColorBox.Items.Add("Желтый");
             if (usedColors.Contains('З'))
-            this.ColorBox.Items.Add("Зеленый");
+                this.ColorBox.Items.Add("Зеленый");
             if (usedColors.Contains('Г'))
-            this.ColorBox.Items.Add("Голубой");
+                this.ColorBox.Items.Add("Голубой");
             if (usedColors.Contains('С'))
-            this.ColorBox.Items.Add("Синий");
+                this.ColorBox.Items.Add("Синий");
             if (usedColors.Contains('Ф'))
-            this.ColorBox.Items.Add("Фиолетовый");
+                this.ColorBox.Items.Add("Фиолетовый");
             this.ColorBox.SelectedIndex = 0;
+            if (this.ColorBox.Items.Count == 1)
+                this.ColorBox.Hide();
         }
 
         private void Playground_Load(object sender, EventArgs e) {
@@ -147,6 +151,8 @@ namespace nonograms {
             this.Size = new Size(LeftPanel.Width + GridPanel.Width, TopPanel.Height + GridPanel.Height);
             this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
 
+            this.ColorPanel.Location = new Point(LeftPanel.Width - 25-ColorBox.Width, TopPanel.Height - 25);
+            this.ColorBox.Location = new Point(LeftPanel.Width - 25, TopPanel.Height - 25);
         }
 
         void fillLeftNumberRows(char[,] levelGrid) {
@@ -441,6 +447,26 @@ namespace nonograms {
                 command.CommandText = $"update nonogramlevels set Progress = '{progressStr}' where Name = '{this.levelName}'";
                 command.ExecuteNonQuery();
             }
+            string sqlExpression = $"SELECT * FROM nonogramlevels where name = '{this.levelName}'";
+            using (var connection = new SQLiteConnection("Data Source=usersdata.db")) {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(sqlExpression, connection);
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    if (reader.HasRows) {
+                        reader.Read();
+                        //string name = (string)reader.GetValue(0);
+                        string answer = (string)reader.GetValue(3);
+                        string progress = (string)reader.GetValue(4);
+                        if (String.Compare(answer, progress) == 0) {
+                            Console.WriteLine(GridAns.ToString());
+                            Console.WriteLine(GridGame.ToString());
+
+                            Console.WriteLine("asdf");
+                            MessageBox.Show("Уровень решен", "", MessageBoxButtons.OK);
+                        }
+                    }
+                }
+            }
         }
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e) {
@@ -523,6 +549,9 @@ namespace nonograms {
                 g.FillRectangle(b, rect.X, rect.Y, 15, 15);
             }
         }
-    
+
+        private void BackButton_Click(object sender, EventArgs e) {
+            this.Close();
+        }
     }
 }
