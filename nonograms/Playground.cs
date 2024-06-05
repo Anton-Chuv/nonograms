@@ -232,11 +232,11 @@ namespace nonograms {
                     switch (GridGame[i, j]) {
                         case 'X':
                             Point[] crossPoints = {
-                                new Point(1 + i * CellSize, 1 + j * CellSize),
-                                new Point(19 + i * CellSize, 19 + j * CellSize),
-                                new Point(10 + i * CellSize, 10+ j * CellSize),
-                                new Point(1+i * CellSize,19+ j * CellSize),
-                                new Point(19+i * CellSize,1+ j * CellSize),
+                                new Point(1 + j * CellSize, 1 + i * CellSize),
+                                new Point(19 + j * CellSize, 19 + i * CellSize),
+                                new Point(10 + j * CellSize, 10 + i * CellSize),
+                                new Point(1 + j * CellSize,19 + i * CellSize),
+                                new Point(19 + j * CellSize,1 + i * CellSize),
                             };
                             e.Graphics.DrawLines(Pens.Black, crossPoints);
                             break;
@@ -486,7 +486,7 @@ namespace nonograms {
                         //string name = (string)reader.GetValue(0);
                         string answer = (string)reader.GetValue(3);
                         string progress = (string)reader.GetValue(4);
-                        if (String.Compare(answer, progress) == 0) {
+                        if (String.Compare(answer, progress.Replace('X', '0')) == 0) {
                             Console.WriteLine(GridAns.ToString());
                             Console.WriteLine(GridGame.ToString());
 
