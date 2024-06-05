@@ -230,7 +230,16 @@ namespace nonograms {
             for (int i = 0; i < GridHeight; i++)
                 for (int j = 0; j < GridWidth; j++)
                     switch (GridGame[i, j]) {
-                        case '1':
+                        case 'X':
+                            Point[] crossPoints = {
+                                new Point(1 + i * CellSize, 1 + j * CellSize),
+                                new Point(19 + i * CellSize, 19 + j * CellSize),
+                                new Point(10 + i * CellSize, 10+ j * CellSize),
+                                new Point(1+i * CellSize,19+ j * CellSize),
+                                new Point(19+i * CellSize,1+ j * CellSize),
+                            };
+                            e.Graphics.DrawLines(Pens.Black, crossPoints);
+                            break;
                         case 'Ч':
                             SolidBrush blackBrush = new SolidBrush(Color.Black);
                             e.Graphics.FillRectangle(blackBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
@@ -269,8 +278,6 @@ namespace nonograms {
         Point click;
 
         private void GridPanel_MouseClick(object sender, MouseEventArgs e) {
-            // TODO пока реагирует только на единичное нажатие, добавь ЗАЖАТИЕ
-            // TODO2 левая и правая кнопка мыши работают одинаково, исправь
             
         }
 
@@ -284,7 +291,6 @@ namespace nonograms {
                     sf.Alignment = StringAlignment.Center;
 
                     switch (topNumCols[i][j].color) {
-                        case '1':
                         case 'Ч':
                             SolidBrush blackBrush = new SolidBrush(Color.Black);
                             e.Graphics.FillRectangle(blackBrush, 1 + p.X - CellSize / 2, 1 + p.Y - CellSize / 2, CellSize - 1, CellSize - 1);
@@ -340,7 +346,6 @@ namespace nonograms {
                     sf.LineAlignment = StringAlignment.Center;
                     sf.Alignment = StringAlignment.Center;
                     switch (leftNumRows[i][j].color) {
-                        case '1':
                         case 'Ч':
                             SolidBrush blackBrush = new SolidBrush(Color.Black);
                             e.Graphics.FillRectangle(blackBrush, 1 + p.X - CellSize / 2, 1 + p.Y - CellSize / 2, CellSize - 1, CellSize - 1);
@@ -398,6 +403,30 @@ namespace nonograms {
             if (click.Y % 20 == 0 || click.X % 20 == 0)
                 return;
             switch (e.Button) {
+                case MouseButtons.Middle:
+                    
+                    drawing = new Thread(() => {
+                        using (Graphics g = this.GridPanel.CreateGraphics()) {
+                            SolidBrush whiteBrush = new SolidBrush(Color.White);
+                                while (!stop) {
+                                if (GridGame[click.Y / 20, click.X / 20] != 'X')
+                                    g.FillRectangle(whiteBrush, 1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize), CellSize - 1, CellSize - 1);
+
+                                Point[] crossPoints = {
+                                    new Point(1 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize)),
+                                    new Point(19 + click.X - (click.X % CellSize), 19 + click.Y - (click.Y % CellSize)),
+                                    new Point(10 + click.X - (click.X % CellSize), 10 + click.Y - (click.Y % CellSize)),
+                                    new Point(1 + click.X - (click.X % CellSize), 19 + click.Y - (click.Y % CellSize)),
+                                    new Point(19 + click.X - (click.X % CellSize), 1 + click.Y - (click.Y % CellSize)),
+                                };
+                                try { GridGame[click.Y / 20, click.X / 20] = 'X'; } catch { }
+                                g.DrawLines(Pens.Black, crossPoints);
+                            }
+                            whiteBrush.Dispose();
+                        }
+                    });
+                    drawing.Start();
+                    break;
                 case MouseButtons.Right:
                     drawing = new Thread(() => {
                         using (Graphics g = this.GridPanel.CreateGraphics()) {
