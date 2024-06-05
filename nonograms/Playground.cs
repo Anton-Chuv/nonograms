@@ -132,8 +132,10 @@ namespace nonograms {
             if (usedColors.Contains('Ф'))
                 this.ColorBox.Items.Add("Фиолетовый");
             this.ColorBox.SelectedIndex = 0;
-            if (this.ColorBox.Items.Count == 1)
+            if (this.ColorBox.Items.Count == 1) {
                 this.ColorBox.Hide();
+                this.ColorPanel.Hide();
+            }
         }
 
         private void Playground_Load(object sender, EventArgs e) {
