@@ -30,10 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.topPanel = new System.Windows.Forms.Panel();
+            this.AddLevelBtn = new nonograms.RoundButton();
             this.label1 = new System.Windows.Forms.Label();
             this.HeadPanel = new System.Windows.Forms.Panel();
             this.CloseButton = new System.Windows.Forms.Button();
-            this.AddLevelBtn = new nonograms.RoundButton();
+            this.ImportBtn = new nonograms.RoundButton();
             this.topPanel.SuspendLayout();
             this.HeadPanel.SuspendLayout();
             this.SuspendLayout();
@@ -41,6 +42,7 @@
             // topPanel
             // 
             this.topPanel.BackColor = System.Drawing.Color.Gainsboro;
+            this.topPanel.Controls.Add(this.ImportBtn);
             this.topPanel.Controls.Add(this.AddLevelBtn);
             this.topPanel.Controls.Add(this.label1);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -48,6 +50,18 @@
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(300, 485);
             this.topPanel.TabIndex = 0;
+            // 
+            // AddLevelBtn
+            // 
+            this.AddLevelBtn.FlatAppearance.BorderSize = 0;
+            this.AddLevelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AddLevelBtn.Image = global::nonograms.Properties.Resources.create_plus_icon;
+            this.AddLevelBtn.Location = new System.Drawing.Point(122, 14);
+            this.AddLevelBtn.Name = "AddLevelBtn";
+            this.AddLevelBtn.Size = new System.Drawing.Size(25, 25);
+            this.AddLevelBtn.TabIndex = 2;
+            this.AddLevelBtn.UseVisualStyleBackColor = true;
+            this.AddLevelBtn.Click += new System.EventHandler(this.AddLevelBtn_Click);
             // 
             // label1
             // 
@@ -87,17 +101,17 @@
             this.CloseButton.UseVisualStyleBackColor = false;
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
             // 
-            // AddLevelBtn
+            // ImportBtn
             // 
-            this.AddLevelBtn.FlatAppearance.BorderSize = 0;
-            this.AddLevelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddLevelBtn.Image = global::nonograms.Properties.Resources.create_plus_icon;
-            this.AddLevelBtn.Location = new System.Drawing.Point(122, 14);
-            this.AddLevelBtn.Name = "AddLevelBtn";
-            this.AddLevelBtn.Size = new System.Drawing.Size(25, 25);
-            this.AddLevelBtn.TabIndex = 2;
-            this.AddLevelBtn.UseVisualStyleBackColor = true;
-            this.AddLevelBtn.Click += new System.EventHandler(this.AddLevelBtn_Click);
+            this.ImportBtn.FlatAppearance.BorderSize = 0;
+            this.ImportBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ImportBtn.Image = global::nonograms.Properties.Resources.create_plus_icon;
+            this.ImportBtn.Location = new System.Drawing.Point(263, 17);
+            this.ImportBtn.Name = "ImportBtn";
+            this.ImportBtn.Size = new System.Drawing.Size(25, 25);
+            this.ImportBtn.TabIndex = 3;
+            this.ImportBtn.UseVisualStyleBackColor = true;
+            this.ImportBtn.Click += new System.EventHandler(this.ImportBtn_Click);
             // 
             // MainWindow
             // 
@@ -124,5 +138,6 @@
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.Label label1;
         private RoundButton AddLevelBtn;
+        private RoundButton ImportBtn;
     }
 }
