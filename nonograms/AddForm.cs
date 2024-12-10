@@ -1,9 +1,12 @@
-﻿using System;
+﻿using BackgroundRemovalSample.App;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,6 +14,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+
 
 namespace nonograms {
     public partial class AddForm : Form {
@@ -107,7 +112,9 @@ namespace nonograms {
                 this.Size = new Size(Size.Width, 300);
 
             this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
-        
+            DropBox.AllowDrop = true;
+
+
         }
 
         Point click;
@@ -201,9 +208,53 @@ namespace nonograms {
 
         private void numericH_ValueChanged(object sender, EventArgs e) {
             GridHeight = (int)numericH.Value;
+            GridHeight = (int)numericH.Value;
+            GridWidth = (int)numericW.Value;
+            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
+            this.GridPanel.Location = new Point(0, 130);
+
+            this.Size = new Size(GridPanel.Width + 16, GridPanel.Location.Y + GridPanel.Height + 39);
+            if (this.Size.Width <= 200)
+                this.Size = new Size(200, Size.Height);
+            if (this.Size.Height <= 300)
+                this.Size = new Size(Size.Width, 300);
+
+            //this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
+
+            char[,] NewGridGame;
+            NewGridGame = new char[GridHeight, GridWidth];
+            for (int i = 0; i < GridHeight; i++)
+                for (int j = 0; j < GridWidth; j++)
+                    NewGridGame[i, j] = '0';
+            for (int i = 0; i < GridHeight && i < GridGame.GetLength(0); i++)
+                for (int j = 0; j < GridWidth && j < GridGame.GetLength(1); j++)
+                    NewGridGame[i, j] = GridGame[i, j];
+            GridGame = NewGridGame;
         }
         private void numericW_ValueChanged(object sender, EventArgs e) {
             GridWidth = (int)numericW.Value;
+            GridHeight = (int)numericH.Value;
+            GridWidth = (int)numericW.Value;
+            this.GridPanel.Size = new Size(this.GridWidth * CellSize + 1, this.GridHeight * CellSize + 1);
+            this.GridPanel.Location = new Point(0, 130);
+
+            this.Size = new Size(GridPanel.Width + 16, GridPanel.Location.Y + GridPanel.Height + 39);
+            if (this.Size.Width <= 200)
+                this.Size = new Size(200, Size.Height);
+            if (this.Size.Height <= 300)
+                this.Size = new Size(Size.Width, 300);
+
+            //this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
+
+            char[,] NewGridGame;
+            NewGridGame = new char[GridHeight, GridWidth];
+            for (int i = 0; i < GridHeight; i++)
+                for (int j = 0; j < GridWidth; j++)
+                    NewGridGame[i, j] = '0';
+            for (int i = 0; i < GridHeight && i < GridGame.GetLength(0); i++)
+                for (int j = 0; j < GridWidth && j < GridGame.GetLength(1); j++)
+                    NewGridGame[i, j] = GridGame[i, j];
+            GridGame = NewGridGame;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) {
@@ -329,5 +380,108 @@ namespace nonograms {
             }
             return Names;
         }
+
+        private void DropBox_DragDrop(object sender, DragEventArgs e)
+        {
+            var image = e.Data.GetData(DataFormats.FileDrop);
+            if (image != null)
+            {
+                var fileNames = image as string[];
+                if (fileNames.Length > 0)
+                {
+                    this.DropBox.Image = Image.FromFile(fileNames[0]);
+                    var filter = new RemoveBackgroundOpenCvFilter();
+                    var res = filter.Apply(OpenCvSharp.Extensions.BitmapConverter.ToMat(new Bitmap(this.DropBox.Image)));
+                    this.DropBox.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(res);
+
+                    Bitmap bitmap = new Bitmap(ResizeImage(this.DropBox.Image, (int)this.numericW.Value, (int)this.numericH.Value));
+
+                    var clrdic = new Dictionary<char, Color>()
+                    {
+                        { 'К', Color.Red },
+                        { 'О', Color.Orange },
+                        { 'Ж', Color.Yellow },
+                        { 'З', Color.Green },
+                        { 'Г', Color.Cyan },
+                        { 'С', Color.Blue },
+                        { 'Ф', Color.Purple },
+                    };
+
+                    for (int i = 0; i < (int)this.numericW.Value; i++) {
+                        for (int j = 0; j < (int)this.numericH.Value; j++) {
+                            var pixel = bitmap.GetPixel(i, j);
+                            if (pixel.A >= 128)
+                            {
+                                var nearclr = '0';
+                                double dist = 100000000.0f;
+                                foreach (var color in clrdic)
+                                {
+                                    var dist_x = Math.Pow(pixel.R - color.Value.R, 2) + Math.Pow(pixel.G - color.Value.G, 2) + Math.Pow(pixel.B - color.Value.B, 2);
+                                    if (dist_x < dist)
+                                    {
+                                        dist = (dist_x);
+                                        nearclr = color.Key;
+                                    }
+                                }
+                                GridGame[j, i] = nearclr;
+
+                                int bporog = 10;
+                                var aver = (pixel.R + pixel.G + pixel.B) / 3;
+                                if (Math.Abs(aver - pixel.R) < bporog && Math.Abs(aver - pixel.G) < bporog && Math.Abs(aver - pixel.B) < bporog)
+                                    GridGame[j, i] = 'Ч';
+                            }
+                            if (pixel.R > 150 || pixel.G > 150 || pixel.B > 150)
+                                GridGame[j, i] = 'Ч';
+                            if (pixel.R < 10 && pixel.G < 10 && pixel.B < 10)
+                                GridGame[j, i] = '0';
+                        }
+                    }
+                    this.Refresh();
+                    //this.PictureBox.
+                }
+            }
+        }
+        private Image BlackWhiteImg(Image img)
+        {
+
+            return img;
+        }
+
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+
+        private void DropBox_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+
+        }
+
+        private void DropBox_DragDrop_1(object sender, DragEventArgs e)
+        {
+
+        }
     }
 }
+

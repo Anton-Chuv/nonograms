@@ -122,8 +122,8 @@ namespace nonograms {
                             if (reader.HasRows) {
                                 reader.Read();
                                 //string name = (string)reader.GetValue(0);
-                                int height = reader.GetInt32(1);
-                                var width = reader.GetInt32(2);
+                                int height = reader.GetInt32(2);
+                                var width = reader.GetInt32(3);
                                 len = height * width;
                             }
                         }

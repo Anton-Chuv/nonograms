@@ -77,18 +77,18 @@ namespace nonograms {
                 using (SQLiteDataReader reader = command.ExecuteReader()) {
                     if (reader.HasRows) {
                         reader.Read();
-                        //string name = (string)reader.GetValue(0);
+                        name = (string)reader.GetValue(1);
                         this.Text = name;
-                        int height = reader.GetInt32(1);
+                        int height = Convert.ToInt32(reader.GetValue(2));
                         this.GridHeight = height;
                         var width = reader.GetInt32(2);
                         this.GridWidth = width;
-                        string answer = (string)reader.GetValue(3);
+                        string answer = (string)reader.GetValue(4);
                         this.GridAns = new char[height, width];
                         for (int i = 0; i < height; i++)
                             for (int j = 0; j < width; j++)
                                 this.GridAns[i,j] = answer[i*width + j];
-                        string progress = (string)reader.GetValue(4);
+                        string progress = (string)reader.GetValue(5);
                         this.GridGame = new char[height, width];
                         for (int i = 0; i < height; i++)
                             for (int j = 0; j < width; j++)
@@ -486,8 +486,8 @@ namespace nonograms {
                     if (reader.HasRows) {
                         reader.Read();
                         //string name = (string)reader.GetValue(0);
-                        string answer = (string)reader.GetValue(3);
-                        string progress = (string)reader.GetValue(4);
+                        string answer = (string)reader.GetValue(4);
+                        string progress = (string)reader.GetValue(5);
                         if (String.Compare(answer, progress.Replace('X', '0')) == 0) {
                             Console.WriteLine(GridAns.ToString());
                             Console.WriteLine(GridGame.ToString());

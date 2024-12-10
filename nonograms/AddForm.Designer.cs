@@ -34,8 +34,10 @@
             this.ColorBox = new System.Windows.Forms.ComboBox();
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.ReloadGridBtn = new System.Windows.Forms.Button();
+            this.DropBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericH)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DropBox)).BeginInit();
             this.SuspendLayout();
             // 
             // GridPanel
@@ -64,7 +66,7 @@
             this.numericH.Size = new System.Drawing.Size(40, 20);
             this.numericH.TabIndex = 2;
             this.numericH.Value = new decimal(new int[] {
-            10,
+            30,
             0,
             0,
             0});
@@ -82,7 +84,7 @@
             this.numericW.Size = new System.Drawing.Size(40, 20);
             this.numericW.TabIndex = 3;
             this.numericW.Value = new decimal(new int[] {
-            10,
+            40,
             0,
             0,
             0});
@@ -166,18 +168,33 @@
             this.ReloadGridBtn.FlatAppearance.BorderSize = 0;
             this.ReloadGridBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReloadGridBtn.Image = global::nonograms.Properties.Resources._2849811_refresh_arrows_multimedia_media_icon;
-            this.ReloadGridBtn.Location = new System.Drawing.Point(125, 10);
+            this.ReloadGridBtn.Location = new System.Drawing.Point(57, 30);
             this.ReloadGridBtn.Name = "ReloadGridBtn";
-            this.ReloadGridBtn.Size = new System.Drawing.Size(50, 50);
+            this.ReloadGridBtn.Size = new System.Drawing.Size(10, 12);
             this.ReloadGridBtn.TabIndex = 6;
             this.ReloadGridBtn.UseVisualStyleBackColor = false;
+            this.ReloadGridBtn.Visible = false;
             this.ReloadGridBtn.Click += new System.EventHandler(this.ReloadGridBtn_Click);
+            // 
+            // DropBox
+            // 
+            this.DropBox.BackColor = System.Drawing.Color.White;
+            this.DropBox.Image = global::nonograms.Properties.Resources._2849811_refresh_arrows_multimedia_media_icon;
+            this.DropBox.Location = new System.Drawing.Point(125, 10);
+            this.DropBox.Name = "DropBox";
+            this.DropBox.Size = new System.Drawing.Size(50, 50);
+            this.DropBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.DropBox.TabIndex = 12;
+            this.DropBox.TabStop = false;
+            this.DropBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.DropBox_DragDrop);
+            this.DropBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.DropBox_DragEnter);
             // 
             // AddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(200, 200);
+            this.ClientSize = new System.Drawing.Size(240, 200);
+            this.Controls.Add(this.DropBox);
             this.Controls.Add(this.ColorPanel);
             this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.NameLabel);
@@ -196,6 +213,7 @@
             this.Load += new System.EventHandler(this.AddForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericH)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DropBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,5 +232,6 @@
         private System.Windows.Forms.Label NameLabel;
         private System.Windows.Forms.ComboBox ColorBox;
         private System.Windows.Forms.Panel ColorPanel;
+        private System.Windows.Forms.PictureBox DropBox;
     }
 }
