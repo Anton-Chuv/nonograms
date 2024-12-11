@@ -34,7 +34,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.HeadPanel = new System.Windows.Forms.Panel();
             this.CloseButton = new System.Windows.Forms.Button();
-            this.ImportBtn = new nonograms.RoundButton();
             this.topPanel.SuspendLayout();
             this.HeadPanel.SuspendLayout();
             this.SuspendLayout();
@@ -42,7 +41,6 @@
             // topPanel
             // 
             this.topPanel.BackColor = System.Drawing.Color.Gainsboro;
-            this.topPanel.Controls.Add(this.ImportBtn);
             this.topPanel.Controls.Add(this.AddLevelBtn);
             this.topPanel.Controls.Add(this.label1);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -101,18 +99,6 @@
             this.CloseButton.UseVisualStyleBackColor = false;
             this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
             // 
-            // ImportBtn
-            // 
-            this.ImportBtn.FlatAppearance.BorderSize = 0;
-            this.ImportBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ImportBtn.Image = global::nonograms.Properties.Resources.create_plus_icon;
-            this.ImportBtn.Location = new System.Drawing.Point(263, 17);
-            this.ImportBtn.Name = "ImportBtn";
-            this.ImportBtn.Size = new System.Drawing.Size(25, 25);
-            this.ImportBtn.TabIndex = 3;
-            this.ImportBtn.UseVisualStyleBackColor = true;
-            this.ImportBtn.Click += new System.EventHandler(this.ImportBtn_Click);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,6 +124,5 @@
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.Label label1;
         private RoundButton AddLevelBtn;
-        private RoundButton ImportBtn;
     }
 }

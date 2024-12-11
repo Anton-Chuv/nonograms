@@ -192,12 +192,6 @@ namespace nonograms {
 
         }
 
-        private void ImportBtn_Click(object sender, EventArgs e) {
-            this.Hide();
-            AddImg addImg = new AddImg();
-            addImg.FormClosed += (object s, FormClosedEventArgs ev) => { this.Show(); AddCards(GetNames()); };
-            addImg.Show();
-        }
     }
     public class RoundButton : Button {
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {

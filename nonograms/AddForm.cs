@@ -49,7 +49,7 @@ namespace nonograms {
             this.ColorBox.Items.Add("Зеленый");
             this.ColorBox.Items.Add("Голубой");
             this.ColorBox.Items.Add("Синий");
-            this.ColorBox.Items.Add("Фиолетовый");
+            this.ColorBox.Items.Add("Серый");
             this.ColorBox.SelectedIndex = ColorBox.FindStringExact("Черный");
 
         }
@@ -92,9 +92,17 @@ namespace nonograms {
                             SolidBrush cyanBrush = new SolidBrush(Color.Cyan);
                             e.Graphics.FillRectangle(cyanBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
                             break;
-                        case 'Ф':
+                        case 'g':
                             SolidBrush purpleBrush = new SolidBrush(Color.Purple);
                             e.Graphics.FillRectangle(purpleBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
+                            break;
+                        case 'b':
+                            SolidBrush brownBrush = new SolidBrush(Color.FromArgb(0xf1, 0xc2, 0x7d));
+                            e.Graphics.FillRectangle(brownBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
+                            break;
+                        case 'Ф':
+                            SolidBrush grayBrush = new SolidBrush(Color.Gray);
+                            e.Graphics.FillRectangle(grayBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
                             break;
                     }
         }
@@ -282,8 +290,8 @@ namespace nonograms {
                 case "Голубой":
                     c = Color.FromName("Cyan");
                     break;
-                case "Фиолетовый":
-                    c = Color.FromName("Purple");
+                case "Серый":
+                    c = Color.FromName("LightGray");
                     break;
 
                 default:
@@ -323,8 +331,8 @@ namespace nonograms {
                     case "Синий":
                         c = Color.FromName("Blue");
                         break;
-                    case "Фиолетовый":
-                        c = Color.FromName("Purple");
+                    case "Серый":
+                        c = Color.FromName("LightGray");
                         break;
                 }
 
@@ -404,13 +412,16 @@ namespace nonograms {
                         { 'З', Color.Green },
                         { 'Г', Color.Cyan },
                         { 'С', Color.Blue },
-                        { 'Ф', Color.Purple },
+                        { 'Ч', Color.Black },
+                        //{ 'Ф', Color.Purple },
+                        //{ 'b', Color.Brown },
+                        { 'Ф', Color.LightGray },
                     };
 
                     for (int i = 0; i < (int)this.numericW.Value; i++) {
                         for (int j = 0; j < (int)this.numericH.Value; j++) {
                             var pixel = bitmap.GetPixel(i, j);
-                            if (pixel.A >= 128)
+                            if (pixel.A >= 50)
                             {
                                 var nearclr = '0';
                                 double dist = 100000000.0f;
@@ -421,17 +432,16 @@ namespace nonograms {
                                     {
                                         dist = (dist_x);
                                         nearclr = color.Key;
+                                        if (Color.FromArgb(color.Key) == Color.LightGray) nearclr = 'Ч';
                                     }
                                 }
                                 GridGame[j, i] = nearclr;
 
-                                int bporog = 10;
-                                var aver = (pixel.R + pixel.G + pixel.B) / 3;
-                                if (Math.Abs(aver - pixel.R) < bporog && Math.Abs(aver - pixel.G) < bporog && Math.Abs(aver - pixel.B) < bporog)
-                                    GridGame[j, i] = 'Ч';
+                                //int bporog = 8;
+                                //var aver = (pixel.R + pixel.G + pixel.B) / 3;
+                                //if (Math.Abs(aver - pixel.R) < bporog && Math.Abs(aver - pixel.G) < bporog && Math.Abs(aver - pixel.B) < bporog)
+                                //    GridGame[j, i] = 'Ч';
                             }
-                            if (pixel.R > 150 || pixel.G > 150 || pixel.B > 150)
-                                GridGame[j, i] = 'Ч';
                             if (pixel.R < 10 && pixel.G < 10 && pixel.B < 10)
                                 GridGame[j, i] = '0';
                         }
@@ -440,11 +450,6 @@ namespace nonograms {
                     //this.PictureBox.
                 }
             }
-        }
-        private Image BlackWhiteImg(Image img)
-        {
-
-            return img;
         }
 
         public static Bitmap ResizeImage(Image image, int width, int height)

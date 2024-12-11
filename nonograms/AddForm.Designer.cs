@@ -179,7 +179,7 @@
             // DropBox
             // 
             this.DropBox.BackColor = System.Drawing.Color.White;
-            this.DropBox.Image = global::nonograms.Properties.Resources._2849811_refresh_arrows_multimedia_media_icon;
+            this.DropBox.Image = global::nonograms.Properties.Resources._8680289_image_add_line_icon;
             this.DropBox.Location = new System.Drawing.Point(125, 10);
             this.DropBox.Name = "DropBox";
             this.DropBox.Size = new System.Drawing.Size(50, 50);

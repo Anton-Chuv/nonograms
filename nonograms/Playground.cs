@@ -130,7 +130,7 @@ namespace nonograms {
             if (usedColors.Contains('С'))
                 this.ColorBox.Items.Add("Синий");
             if (usedColors.Contains('Ф'))
-                this.ColorBox.Items.Add("Фиолетовый");
+                this.ColorBox.Items.Add("LightGray");
             this.ColorBox.SelectedIndex = 0;
             if (this.ColorBox.Items.Count == 1) {
                 this.ColorBox.Hide();
@@ -271,7 +271,7 @@ namespace nonograms {
                             e.Graphics.FillRectangle(cyanBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
                             break;
                         case 'Ф':
-                            SolidBrush purpleBrush = new SolidBrush(Color.Purple);
+                            SolidBrush purpleBrush = new SolidBrush(Color.LightGray);
                             e.Graphics.FillRectangle(purpleBrush, 1 + j * CellSize, 1 + i * CellSize, CellSize - 1, CellSize - 1);
                             break;
                     }
@@ -319,9 +319,9 @@ namespace nonograms {
                             e.Graphics.DrawString(topNumCols[i][j].len.ToString(), Font, new SolidBrush(Color.Black), p, sf);
                             break;
                         case 'Ф':
-                            SolidBrush purpleBrush = new SolidBrush(Color.Purple);
+                            SolidBrush purpleBrush = new SolidBrush(Color.LightGray);
                             e.Graphics.FillRectangle(purpleBrush, 1 + p.X - CellSize / 2, 1 + p.Y - CellSize / 2, CellSize - 1, CellSize - 1);
-                            e.Graphics.DrawString(topNumCols[i][j].len.ToString(), Font, new SolidBrush(Color.White), p, sf);
+                            e.Graphics.DrawString(topNumCols[i][j].len.ToString(), Font, new SolidBrush(Color.Black), p, sf);
                             break;
                         case 'Г':
                             SolidBrush cyanBrush = new SolidBrush(Color.Cyan);
@@ -374,9 +374,9 @@ namespace nonograms {
                             e.Graphics.DrawString(leftNumRows[i][j].len.ToString(), Font, new SolidBrush(Color.Black), p, sf);
                             break;
                         case 'Ф':
-                            SolidBrush purpleBrush = new SolidBrush(Color.Purple);
+                            SolidBrush purpleBrush = new SolidBrush(Color.LightGray);
                             e.Graphics.FillRectangle(purpleBrush, 1 + p.X - CellSize / 2, 1 + p.Y - CellSize / 2, CellSize - 1, CellSize - 1);
-                            e.Graphics.DrawString(leftNumRows[i][j].len.ToString(), Font, new SolidBrush(Color.White), p, sf);
+                            e.Graphics.DrawString(leftNumRows[i][j].len.ToString(), Font, new SolidBrush(Color.Black), p, sf);
                             break;
                         case 'Г':
                             SolidBrush cyanBrush = new SolidBrush(Color.Cyan);
